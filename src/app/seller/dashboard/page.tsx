@@ -1,0 +1,352 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  DollarSign,
+  Package,
+  ShoppingBag,
+  AlertTriangle,
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  TrendingUp,
+  Store,
+} from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+
+interface SellerStats {
+  metrics: {
+    totalRevenueCents: number;
+    totalOrdersCount: number;
+    pendingOrdersCount: number;
+    activeProductsCount: number;
+    lowStockCount: number;
+    outOfStockCount: number;
+  };
+  recentOrders: {
+    id: string;
+    orderId: string;
+    orderNumber: string;
+    productTitle: string;
+    variantName?: string | null;
+    unitPrice: number;
+    quantity: number;
+    totalPrice: number;
+    fulfillmentStatus: string;
+    createdAt: string;
+    customerName: string;
+  }[];
+  lowStockProducts: {
+    id: string;
+    title: string;
+    stock: number;
+    lowStockThreshold: number;
+    price: number;
+    imageUrl?: string;
+  }[];
+}
+
+export default function SellerDashboardPage() {
+  const [data, setData] = useState<SellerStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchStats = async () => {
+    try {
+      const res = await fetch("/api/seller/stats");
+      if (res.ok) {
+        const stats = await res.json();
+        setData(stats);
+      }
+    } catch (err) {
+      console.error("Error fetching stats:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="py-20 text-center space-y-4">
+        <div className="w-10 h-10 border-2 border-brand-terracotta border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xs font-medium text-brand-stone">
+          Loading your Studio Analytics...
+        </p>
+      </div>
+    );
+  }
+
+  const metrics = data?.metrics || {
+    totalRevenueCents: 0,
+    totalOrdersCount: 0,
+    pendingOrdersCount: 0,
+    activeProductsCount: 0,
+    lowStockCount: 0,
+    outOfStockCount: 0,
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Welcome Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span className="text-xs font-semibold tracking-wider uppercase text-brand-terracotta">
+            Artisan Studio Portal
+          </span>
+          <h1 className="font-serif text-3xl font-bold text-brand-charcoal mt-1">
+            Studio Performance &amp; Orders
+          </h1>
+          <p className="text-xs text-brand-stone mt-1">
+            Real metrics derived from your authentic customer sales.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Link
+            href="/seller/products/new"
+            className="btn-primary text-xs px-5 py-2.5 shadow-clay flex items-center gap-1.5"
+          >
+            <span>+ New Product</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* 1. TACTILE METRIC CARDS (Inspired by Reference 1 & 4) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Revenue Card with Soft Topographic Curve */}
+        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft relative overflow-hidden flex flex-col justify-between">
+          <div className="relative z-10">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-stone">
+                Total Revenue
+              </span>
+              <div className="w-8 h-8 rounded-full bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center">
+                <DollarSign className="w-4 h-4" />
+              </div>
+            </div>
+            <p className="font-serif text-3xl font-bold text-brand-charcoal mt-3">
+              {formatCurrency(metrics.totalRevenueCents)}
+            </p>
+            <p className="text-[11px] text-brand-sage font-medium mt-1 flex items-center gap-1">
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span>Real order transactions</span>
+            </p>
+          </div>
+
+          {/* Decorative Clay Curve */}
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-brand-terracotta/10 pointer-events-none" />
+        </div>
+
+        {/* Orders Card */}
+        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-stone">
+                Total Orders
+              </span>
+              <div className="w-8 h-8 rounded-full bg-brand-gold/10 text-brand-gold flex items-center justify-center">
+                <ShoppingBag className="w-4 h-4" />
+              </div>
+            </div>
+            <p className="font-serif text-3xl font-bold text-brand-charcoal mt-3">
+              {metrics.totalOrdersCount}
+            </p>
+            <p className="text-[11px] text-brand-stone mt-1">
+              <strong className="text-brand-terracotta">{metrics.pendingOrdersCount}</strong> awaiting fulfillment
+            </p>
+          </div>
+        </div>
+
+        {/* Active Products Card */}
+        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-stone">
+                Active Catalog
+              </span>
+              <div className="w-8 h-8 rounded-full bg-brand-sage/10 text-brand-sage flex items-center justify-center">
+                <Package className="w-4 h-4" />
+              </div>
+            </div>
+            <p className="font-serif text-3xl font-bold text-brand-charcoal mt-3">
+              {metrics.activeProductsCount}
+            </p>
+            <p className="text-[11px] text-brand-stone mt-1">
+              Handcrafted listings published
+            </p>
+          </div>
+        </div>
+
+        {/* Low Stock Warning Card */}
+        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-stone">
+                Inventory Alerts
+              </span>
+              <div className="w-8 h-8 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4" />
+              </div>
+            </div>
+            <p className="font-serif text-3xl font-bold text-brand-charcoal mt-3">
+              {metrics.lowStockCount}
+            </p>
+            <p className="text-[11px] text-amber-700 font-medium mt-1">
+              {metrics.lowStockCount > 0 ? "Requires restock soon" : "Healthy inventory levels"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. ONBOARDING & STUDIO CHECKLIST */}
+      <div className="bg-gradient-to-r from-brand-blush via-white to-brand-sand rounded-3xl p-6 sm:p-8 border border-brand-clay shadow-soft">
+        <div className="flex items-center gap-2 mb-3">
+          <Sparkles className="w-4 h-4 text-brand-gold" />
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal">
+            Maker Studio Launch Checklist
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-brand-clay/60 flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 text-brand-sage shrink-0" />
+            <div>
+              <p className="font-bold text-brand-charcoal">Storefront Published</p>
+              <p className="text-brand-stone text-[11px]">Brand story &amp; banner configured</p>
+            </div>
+          </div>
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-brand-clay/60 flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 text-brand-sage shrink-0" />
+            <div>
+              <p className="font-bold text-brand-charcoal">Products Listed</p>
+              <p className="text-brand-stone text-[11px]">{metrics.activeProductsCount} creations in catalog</p>
+            </div>
+          </div>
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-brand-clay/60 flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 text-brand-sage shrink-0" />
+            <div>
+              <p className="font-bold text-brand-charcoal">Orders Ready</p>
+              <p className="text-brand-stone text-[11px]">Encrypted checkout enabled</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. RECENT ORDERS & LOW STOCK SPLIT */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Recent Orders Table */}
+        <div className="lg:col-span-8 bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
+          <div className="flex items-center justify-between pb-3 border-b border-brand-clay/40">
+            <div>
+              <h2 className="font-serif text-lg font-bold text-brand-charcoal">
+                Recent Orders for Your Studio
+              </h2>
+              <p className="text-xs text-brand-stone">Fulfill and track customer purchases</p>
+            </div>
+            <Link
+              href="/seller/orders"
+              className="text-xs font-semibold text-brand-terracotta hover:underline"
+            >
+              View All Orders &rarr;
+            </Link>
+          </div>
+
+          {(!data?.recentOrders || data.recentOrders.length === 0) ? (
+            <div className="py-12 text-center text-xs text-brand-stone">
+              No orders received yet. When customers buy your products, they will appear here.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {data.recentOrders.map((order) => (
+                <div
+                  key={order.id}
+                  className="p-4 rounded-2xl border border-brand-clay/50 bg-brand-cream/30 hover:bg-brand-cream/60 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold font-serif text-brand-charcoal text-sm">
+                        {order.orderNumber}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-sand text-brand-charcoal border border-brand-clay">
+                        {order.fulfillmentStatus}
+                      </span>
+                    </div>
+                    <p className="text-brand-charcoal font-medium mt-1">
+                      {order.productTitle} {order.variantName ? `(${order.variantName})` : ""}
+                    </p>
+                    <p className="text-[11px] text-brand-stone mt-0.5">
+                      Customer: {order.customerName} • Qty: {order.quantity}
+                    </p>
+                  </div>
+
+                  <div className="text-right flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto">
+                    <span className="font-serif font-bold text-sm text-brand-charcoal">
+                      {formatCurrency(order.totalPrice)}
+                    </span>
+                    <Link
+                      href="/seller/orders"
+                      className="text-[11px] font-semibold text-brand-terracotta hover:underline mt-1"
+                    >
+                      Update Fulfillment &rarr;
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Low Stock Warnings Widget */}
+        <div className="lg:col-span-4 bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-brand-clay/40">
+            <h3 className="font-serif text-base font-bold text-brand-charcoal flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              <span>Low Stock Alert</span>
+            </h3>
+            <Link
+              href="/seller/products"
+              className="text-xs font-semibold text-brand-terracotta hover:underline"
+            >
+              Inventory
+            </Link>
+          </div>
+
+          {(!data?.lowStockProducts || data.lowStockProducts.length === 0) ? (
+            <div className="py-8 text-center text-xs text-brand-stone">
+              <p>✓ All items have sufficient stock.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {data.lowStockProducts.map((p) => (
+                <div
+                  key={p.id}
+                  className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-amber-50/60 border border-amber-200/60"
+                >
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-brand-charcoal truncate">
+                      {p.title}
+                    </p>
+                    <p className="text-[11px] text-amber-800">
+                      Remaining stock: <strong>{p.stock}</strong> (Threshold: {p.lowStockThreshold})
+                    </p>
+                  </div>
+                  <Link
+                    href={`/seller/products`}
+                    className="px-3 py-1 rounded-full bg-white border border-amber-300 text-[11px] font-semibold text-amber-900 hover:bg-amber-100 shrink-0"
+                  >
+                    Restock
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

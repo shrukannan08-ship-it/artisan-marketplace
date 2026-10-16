@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-cream: #FAF7F2;
+    --brand-surface: #FFFFFF;
+    --brand-terracotta: #C86D51;
+    --brand-sage: #5E8773;
+    --brand-charcoal: #28231F;
+    --brand-stone: #6E6660;
+    --brand-clay: #EADCD2;
+  }
+
+  body {
+    background-color: var(--brand-cream);
+    color: var(--brand-charcoal);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: rgba(200, 109, 81, 0.2);
+    color: #28231F;
+  }
+}
+
+/* Claymorphic and tactile soft UI utilities inspired by reference designs */
+@layer components {
+  .clay-card {
+    @apply bg-white rounded-3xl border border-brand-clay/70 shadow-soft transition-all duration-300;
+  }
+
+  .clay-card-hover {
+    @apply clay-card hover:shadow-card hover:-translate-y-1 hover:border-brand-rose/60;
+  }
+
+  .clay-pill {
+    @apply inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium border border-brand-clay/80 bg-white/90 shadow-subtle backdrop-blur-xs;
+  }
+
+  .clay-stat-card {
+    @apply rounded-3xl bg-white/90 border border-brand-clay/60 p-5 shadow-soft transition-all;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-terracotta text-white font-medium text-sm tracking-wide shadow-clay hover:bg-brand-terracotta-dark active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white text-brand-charcoal font-medium text-sm tracking-wide border border-brand-clay hover:bg-brand-sand active:scale-[0.98] transition-all duration-200 disabled:opacity-50;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-brand-terracotta text-brand-terracotta font-medium text-sm hover:bg-brand-terracotta-light transition-all;
+  }
+
+  .editorial-title {
+    @apply font-serif tracking-tight text-brand-charcoal;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF7F2;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D9CCC1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C86D51;
+}
