@@ -11,10 +11,10 @@ import {
   Plus,
   Store,
 } from "lucide-react";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, isOwner } from "@/lib/auth";
 
 export const metadata = {
-  title: "Seller Studio Portal | Mitti & Muse",
+  title: "Owner Studio Portal | Mitti & Muse",
 };
 
 export default async function SellerLayout({
@@ -24,8 +24,8 @@ export default async function SellerLayout({
 }) {
   const user = await getCurrentUser();
 
-  if (!user || user.role !== "SELLER") {
-    redirect("/auth/login?redirect=/seller/dashboard");
+  if (!user || !isOwner(user)) {
+    redirect("/auth/owner/login?redirect=/seller/dashboard");
   }
 
   const storeSlug = user.storeSlug || "mitti-ceramics";

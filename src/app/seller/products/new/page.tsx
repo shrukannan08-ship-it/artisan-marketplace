@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -11,6 +12,10 @@ import {
   Trash2,
   Image as ImageIcon,
   CheckCircle2,
+  Upload,
+  Loader2,
+  Eye,
+  FileText,
 } from "lucide-react";
 import { Category } from "@/types";
 
@@ -26,11 +31,16 @@ export default function NewProductPage() {
   const [price, setPrice] = useState("");
   const [compareAtPrice, setCompareAtPrice] = useState("");
   const [stock, setStock] = useState("10");
+  const [status, setStatus] = useState<"ACTIVE" | "DRAFT">("ACTIVE");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
   const [craftDetails, setCraftDetails] = useState("");
   const [careInstructions, setCareInstructions] = useState("");
+
+  // Imagery
   const [imageUrl, setImageUrl] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Variants state
   const [variants, setVariants] = useState<
@@ -41,22 +51,62 @@ export default function NewProductPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch categories for dropdown
-    fetch("/api/products")
+    // Fetch categories from dedicated API
+    fetch("/api/categories")
       .then((res) => res.json())
       .then((data) => {
-        // Extract categories
-        const catsMap = new Map();
-        data.products?.forEach((p: { category?: Category }) => {
-          if (p.category) catsMap.set(p.category.id, p.category);
-        });
-        const cats = Array.from(catsMap.values());
-        setCategories(cats);
-        if (cats.length > 0) setCategoryId(cats[0].id);
+        if (data.categories && data.categories.length > 0) {
+          setCategories(data.categories);
+          setCategoryId(data.categories[0].id);
+        }
       })
       .catch((err) => console.error("Error fetching categories:", err))
       .finally(() => setLoadingCategories(false));
   }, []);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate type and size
+    const validTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      setUploadError("Only JPG, PNG, and WebP images are allowed.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError("Image file size must be less than 10MB.");
+      return;
+    }
+
+    setUploadingImage(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Image upload failed");
+      }
+
+      setImageUrl(data.url);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setUploadError(err.message);
+      } else {
+        setUploadError("Failed to upload image.");
+      }
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleAddVariant = () => {
     setVariants((prev) => [
@@ -97,6 +147,7 @@ export default function NewProductPage() {
         price: parseFloat(price),
         compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : null,
         stock: parseInt(stock) || 10,
+        status,
         tags,
         craftDetails,
         careInstructions,
@@ -135,26 +186,6 @@ export default function NewProductPage() {
     }
   };
 
-  // Image Presets for rapid seller demonstration
-  const imagePresets = [
-    {
-      label: "Speckled Stoneware",
-      url: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      label: "Botanical Jewelry",
-      url: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      label: "Soy Candle Jar",
-      url: "https://images.unsplash.com/photo-1602874801007-bd458bb1b8b8?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      label: "DIY Embroidery",
-      url: "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=800&q=80",
-    },
-  ];
-
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-16">
       {/* Back button */}
@@ -178,7 +209,7 @@ export default function NewProductPage() {
           Publish a Handcrafted Product
         </h1>
         <p className="text-xs text-brand-stone mt-1">
-          Provide craftsmanship details, pricing, variants, and photography for your public storefront.
+          Provide craftsmanship details, real photography, pricing, and variants for your public storefront.
         </p>
       </div>
 
@@ -215,18 +246,22 @@ export default function NewProductPage() {
               <label className="block text-xs font-semibold text-brand-charcoal mb-1">
                 Category *
               </label>
-              <select
-                required
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
-              >
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              {loadingCategories ? (
+                <div className="text-xs text-brand-stone py-2">Loading categories...</div>
+              ) : (
+                <select
+                  required
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                >
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div>
@@ -259,13 +294,13 @@ export default function NewProductPage() {
           </div>
         </div>
 
-        {/* Pricing */}
+        {/* Pricing & Publication Status */}
         <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
           <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/40">
-            Pricing
+            Pricing &amp; Publication Status
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-brand-charcoal mb-1">
                 Price (USD $) *
@@ -284,7 +319,7 @@ export default function NewProductPage() {
 
             <div>
               <label className="block text-xs font-semibold text-brand-charcoal mb-1">
-                Compare-at Price (optional strikethrough original value)
+                Compare-at Price (optional)
               </label>
               <input
                 type="number"
@@ -296,49 +331,105 @@ export default function NewProductPage() {
                 className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
               />
             </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                Listing Status
+              </label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as "ACTIVE" | "DRAFT")}
+                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 font-medium"
+              >
+                <option value="ACTIVE">Active (Publish to Marketplace)</option>
+                <option value="DRAFT">Draft (Save in Private Atelier)</option>
+              </select>
+            </div>
           </div>
         </div>
 
         {/* Product Imagery */}
         <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
           <div className="flex items-center justify-between pb-2 border-b border-brand-clay/40">
-            <h2 className="font-serif text-lg font-bold text-brand-charcoal">
-              Photography &amp; Visuals
-            </h2>
+            <div>
+              <h2 className="font-serif text-lg font-bold text-brand-charcoal">
+                Photography &amp; Visuals
+              </h2>
+              <p className="text-xs text-brand-stone">Upload genuine photographs of your creation</p>
+            </div>
             <ImageIcon className="w-4 h-4 text-brand-stone" />
           </div>
 
+          {uploadError && (
+            <div className="p-3 rounded-xl bg-red-50 text-red-700 text-xs border border-red-200">
+              {uploadError}
+            </div>
+          )}
+
+          {/* File Upload Zone */}
+          <div className="border-2 border-dashed border-brand-clay rounded-2xl p-6 text-center hover:border-brand-terracotta transition-colors bg-brand-cream/30">
+            <input
+              type="file"
+              id="product-image-upload"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={handleFileUpload}
+              disabled={uploadingImage}
+              className="hidden"
+            />
+            <label
+              htmlFor="product-image-upload"
+              className="cursor-pointer block space-y-2"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-white border border-brand-clay flex items-center justify-center mx-auto text-brand-terracotta shadow-soft">
+                {uploadingImage ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Upload className="w-5 h-5" />
+                )}
+              </div>
+              <div>
+                <span className="text-xs font-bold text-brand-charcoal hover:underline">
+                  {uploadingImage ? "Uploading Craft Image..." : "Click to Upload Product Photo"}
+                </span>
+                <span className="text-[11px] text-brand-stone block mt-0.5">
+                  PNG, JPG, or WebP up to 10MB
+                </span>
+              </div>
+            </label>
+          </div>
+
+          {/* Or Manual URL */}
           <div>
             <label className="block text-xs font-semibold text-brand-charcoal mb-1">
-              Primary Image URL (HTTPS)
+              Or specify an Image URL directly
             </label>
             <input
               type="url"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://images.unsplash.com/photo-..."
+              placeholder="https://images.unsplash.com/... or uploaded URL"
               className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
 
-          {/* Quick Preset Buttons */}
-          <div>
-            <p className="text-[11px] font-semibold text-brand-stone mb-2">
-              Or pick an artisanal preset for instant demo:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {imagePresets.map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  onClick={() => setImageUrl(preset.url)}
-                  className="px-3 py-1.5 rounded-full border border-brand-clay bg-brand-cream/60 text-xs font-medium text-brand-charcoal hover:bg-brand-sand transition-all"
-                >
-                  {preset.label}
-                </button>
-              ))}
+          {/* Image Preview */}
+          {imageUrl && (
+            <div className="p-3 rounded-2xl bg-brand-cream/40 border border-brand-clay flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl overflow-hidden relative border border-brand-clay shrink-0">
+                <Image
+                  src={imageUrl}
+                  alt="Product preview"
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+              <div className="text-xs truncate">
+                <span className="font-semibold text-brand-charcoal block">Image Loaded</span>
+                <span className="text-brand-stone text-[11px] truncate block">{imageUrl}</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Product Variants */}
@@ -492,11 +583,13 @@ export default function NewProductPage() {
             className="btn-primary text-xs px-8 py-3.5 shadow-clay flex items-center gap-2 font-bold"
           >
             {submitting ? (
-              <span>Publishing...</span>
+              <span>Saving Creation...</span>
             ) : (
               <>
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Publish to Storefront</span>
+                <span>
+                  {status === "ACTIVE" ? "Publish to Storefront" : "Save as Draft"}
+                </span>
               </>
             )}
           </button>

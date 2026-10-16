@@ -11,8 +11,9 @@ interface AuthContextType {
     name: string,
     email: string,
     password: string,
-    role: "CUSTOMER" | "SELLER",
-    storeName?: string
+    role: "CUSTOMER" | "OWNER" | "SELLER",
+    storeName?: string,
+    extraStoreData?: { tagline?: string; description?: string; location?: string }
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -67,14 +68,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     name: string,
     email: string,
     password: string,
-    role: "CUSTOMER" | "SELLER",
-    storeName?: string
+    role: "CUSTOMER" | "OWNER" | "SELLER",
+    storeName?: string,
+    extraStoreData?: { tagline?: string; description?: string; location?: string }
   ) => {
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role, storeName }),
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          role,
+          storeName,
+          ...extraStoreData,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {

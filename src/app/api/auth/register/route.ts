@@ -5,7 +5,16 @@ import { slugify } from "@/lib/utils";
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password, role = "CUSTOMER", storeName } = await req.json();
+    const {
+      name,
+      email,
+      password,
+      role = "CUSTOMER",
+      storeName,
+      tagline,
+      description,
+      location,
+    } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -34,9 +43,10 @@ export async function POST(req: Request) {
     }
 
     const passwordHash = await hashPassword(password);
-    const assignedRole = role === "SELLER" ? "SELLER" : "CUSTOMER";
+    const isOwner = role === "OWNER" || role === "SELLER";
+    const assignedRole = isOwner ? "OWNER" : "CUSTOMER";
 
-    // Create user and optionally their store if seller
+    // Create user
     const user = await prisma.user.create({
       data: {
         name: name.trim(),
@@ -47,7 +57,7 @@ export async function POST(req: Request) {
     });
 
     let store = null;
-    if (assignedRole === "SELLER") {
+    if (isOwner) {
       const actualStoreName = storeName?.trim() || `${name.trim()}'s Studio`;
       let slug = slugify(actualStoreName);
 
@@ -62,8 +72,9 @@ export async function POST(req: Request) {
           userId: user.id,
           storeName: actualStoreName,
           slug,
-          tagline: "Independent handcrafted goods & artisanal creations",
-          description: `Welcome to ${actualStoreName}. We craft small-batch handmade goods with love and authentic materials.`,
+          tagline: tagline?.trim() || "Independent handcrafted goods & artisanal creations",
+          description: description?.trim() || `Welcome to ${actualStoreName}. We craft small-batch handmade goods with love and authentic materials.`,
+          location: location?.trim() || "Atelier Studio",
           primaryColor: "#C86D51",
           accentColor: "#5E8773",
           rating: 5.0,

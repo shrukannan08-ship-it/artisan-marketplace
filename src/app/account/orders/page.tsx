@@ -11,6 +11,8 @@ export const metadata = {
   description: "Track your orders and view order history.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function CustomerOrdersPage() {
   const user = await getCurrentUser();
 

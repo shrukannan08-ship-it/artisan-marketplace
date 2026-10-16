@@ -86,4 +86,9 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   }
 }
 
+export function isOwner(user: AuthUser | null): boolean {
+  if (!user) return false;
+  return user.role === "OWNER" || user.role === "SELLER" || user.role === "ADMIN";
+}
+
 export const AUTH_COOKIE_NAME = COOKIE_NAME;

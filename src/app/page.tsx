@@ -229,28 +229,51 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {featuredProducts.map((product, idx) => {
-            const badges = ["Bestseller", "New", "Staff Pick", "Trending"];
-            const colors: ("terracotta" | "sage" | "gold" | "rose")[] = [
-              "terracotta",
-              "sage",
-              "gold",
-              "rose",
-            ];
-            const badge = badges[idx % badges.length];
-            const badgeColor = colors[idx % colors.length];
+        {featuredProducts.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-brand-clay/70 p-10 sm:p-14 text-center space-y-4 shadow-soft max-w-2xl mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center mx-auto">
+              <Sparkles className="w-7 h-7" />
+            </div>
+            <h3 className="font-serif text-2xl font-bold text-brand-charcoal">
+              The Artisan Atelier Is Awakening
+            </h3>
+            <p className="text-xs sm:text-sm text-brand-stone max-w-md mx-auto leading-relaxed">
+              We are actively onboarding independent craftspeople, boutique creators, and ceramicists. Be among the first to showcase your creations to patrons.
+            </p>
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/auth/owner/register"
+                className="btn-primary text-xs px-6 py-3 shadow-clay inline-flex items-center gap-2"
+              >
+                <Store className="w-4 h-4" />
+                <span>Start Your Store &amp; Publish First Piece</span>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {featuredProducts.map((product, idx) => {
+              const badges = ["Bestseller", "New", "Staff Pick", "Trending"];
+              const colors: ("terracotta" | "sage" | "gold" | "rose")[] = [
+                "terracotta",
+                "sage",
+                "gold",
+                "rose",
+              ];
+              const badge = badges[idx % badges.length];
+              const badgeColor = colors[idx % colors.length];
 
-            return (
-              <ProductCard
-                key={product.id}
-                product={product}
-                badge={badge}
-                badgeColor={badgeColor}
-              />
-            );
-          })}
-        </div>
+              return (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  badge={badge}
+                  badgeColor={badgeColor}
+                />
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* 4. EDITORIAL MAKER INSPIRATION BANNER (Reference 2 style) */}
@@ -323,126 +346,189 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stores.map((store) => (
-            <Link
-              key={store.id}
-              href={`/store/${store.slug}`}
-              className="group bg-white rounded-3xl border border-brand-clay/70 p-5 shadow-soft hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="relative h-28 w-full rounded-2xl overflow-hidden bg-brand-sand mb-4">
-                  {store.bannerUrl && (
-                    <Image
-                      src={store.bannerUrl}
-                      alt={store.storeName}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-black/15" />
-                  <div className="absolute -bottom-3 left-4 w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md bg-white">
-                    {store.logoUrl && (
+        {stores.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-brand-clay/70 p-10 sm:p-14 text-center space-y-4 shadow-soft max-w-2xl mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-brand-sand text-brand-stone flex items-center justify-center mx-auto">
+              <Store className="w-7 h-7 text-brand-terracotta" />
+            </div>
+            <h3 className="font-serif text-2xl font-bold text-brand-charcoal">
+              Our Collective of Studios Is Forming
+            </h3>
+            <p className="text-xs sm:text-sm text-brand-stone max-w-md mx-auto leading-relaxed">
+              Every storefront on Mitti &amp; Muse is independently operated by small-batch artisans, women-led studios, and creative entrepreneurs.
+            </p>
+            <div className="pt-2">
+              <Link
+                href="/auth/owner/register"
+                className="btn-primary text-xs px-6 py-3 shadow-clay inline-flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Open Your Independent Storefront</span>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {stores.map((store) => (
+              <Link
+                key={store.id}
+                href={`/store/${store.slug}`}
+                className="group bg-white rounded-3xl border border-brand-clay/70 p-5 shadow-soft hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="relative h-28 w-full rounded-2xl overflow-hidden bg-brand-sand mb-4">
+                    {store.bannerUrl && (
                       <Image
-                        src={store.logoUrl}
+                        src={store.bannerUrl}
                         alt={store.storeName}
                         fill
-                        className="object-cover"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     )}
-                  </div>
-                </div>
-
-                <div className="pt-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-serif text-base font-bold text-brand-charcoal group-hover:text-brand-terracotta transition-colors">
-                      {store.storeName}
-                    </h3>
-                    <div className="flex items-center gap-1 text-xs font-semibold text-brand-charcoal">
-                      <Star className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
-                      <span>{store.rating.toFixed(1)}</span>
+                    <div className="absolute inset-0 bg-black/15" />
+                    <div className="absolute -bottom-3 left-4 w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-md bg-white">
+                      {store.logoUrl && (
+                        <Image
+                          src={store.logoUrl}
+                          alt={store.storeName}
+                          fill
+                          className="object-cover"
+                        />
+                      )}
                     </div>
                   </div>
-                  <p className="text-xs text-brand-terracotta font-medium mt-0.5">
-                    {store.location || "Independent Studio"}
-                  </p>
-                  <p className="text-xs text-brand-stone mt-2 line-clamp-2 leading-relaxed">
-                    {store.tagline || store.description}
-                  </p>
-                </div>
-              </div>
 
-              <div className="mt-4 pt-3 border-t border-brand-clay/40 flex items-center justify-between text-xs font-medium text-brand-stone">
-                <span>{store.products.length} artisanal products</span>
-                <span className="text-brand-terracotta group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                  Visit Store &rarr;
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+                  <div className="pt-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-serif text-base font-bold text-brand-charcoal group-hover:text-brand-terracotta transition-colors">
+                        {store.storeName}
+                      </h3>
+                      <div className="flex items-center gap-1 text-xs font-semibold text-brand-charcoal">
+                        <Star className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
+                        <span>{store.rating.toFixed(1)}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-brand-terracotta font-medium mt-0.5">
+                      {store.location || "Independent Studio"}
+                    </p>
+                    <p className="text-xs text-brand-stone mt-2 line-clamp-2 leading-relaxed">
+                      {store.tagline || store.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-brand-clay/40 flex items-center justify-between text-xs font-medium text-brand-stone">
+                  <span>{store.products.length} artisanal products</span>
+                  <span className="text-brand-terracotta group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                    Visit Store &rarr;
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* 6. COMMUNITY REVIEWS ("What Our Makers Say" Reference 2 style) */}
+      {/* 6. COMMUNITY REVIEWS & ARTISAN PROMISES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-xl mx-auto mb-10">
           <span className="text-xs font-semibold tracking-wider uppercase text-brand-terracotta">
-            Real Experiences
+            The Artisan Standard
           </span>
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-brand-charcoal mt-1">
-            What Our Community Says
+            {reviews.length > 0 ? "What Our Community Says" : "Our Craft & Patron Promises"}
           </h2>
           <p className="text-xs sm:text-sm text-brand-stone mt-2">
             Real people, real creativity, genuine handmade love.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {reviews.map((rev) => (
-            <div
-              key={rev.id}
-              className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center gap-1 mb-3">
-                  {[...Array(rev.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-brand-gold fill-brand-gold" />
-                  ))}
-                </div>
-                <h4 className="font-serif font-bold text-brand-charcoal text-sm mb-2">
-                  &ldquo;{rev.title}&rdquo;
-                </h4>
-                <p className="text-xs text-brand-stone leading-relaxed">
-                  &ldquo;{rev.content}&rdquo;
-                </p>
+        {reviews.length === 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center">
+                <Heart className="w-5 h-5" />
               </div>
+              <h4 className="font-serif font-bold text-brand-charcoal text-base">
+                100% Artisan-Direct
+              </h4>
+              <p className="text-xs text-brand-stone leading-relaxed">
+                Over 90% of order value goes directly to the independent studio owner, empowering craft preservation and local livelihoods.
+              </p>
+            </div>
 
-              <div className="flex items-center gap-3 mt-6 pt-4 border-t border-brand-clay/40">
-                <div className="relative w-9 h-9 rounded-full overflow-hidden bg-brand-sand shrink-0">
-                  {rev.userAvatar ? (
-                    <Image
-                      src={rev.userAvatar}
-                      alt={rev.userName || "Customer"}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center font-bold text-xs">
-                      {rev.userName?.charAt(0) || "U"}
-                    </div>
-                  )}
-                </div>
+            <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-brand-sage-light text-brand-sage-dark flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5 text-brand-sage" />
+              </div>
+              <h4 className="font-serif font-bold text-brand-charcoal text-base">
+                Authentic Craft Guarantee
+              </h4>
+              <p className="text-xs text-brand-stone leading-relaxed">
+                Zero factory mass production. Every product is individually thrown, poured, stitched, or hand-assembled with certified materials.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-brand-sand text-brand-charcoal flex items-center justify-center">
+                <Truck className="w-5 h-5 text-brand-gold" />
+              </div>
+              <h4 className="font-serif font-bold text-brand-charcoal text-base">
+                Secure Patron Shipping
+              </h4>
+              <p className="text-xs text-brand-stone leading-relaxed">
+                Thoughtfully packaged in eco-friendly paper wrapping, shipped with direct tracking from the maker&apos;s workshop to your doorstep.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {reviews.map((rev) => (
+              <div
+                key={rev.id}
+                className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft flex flex-col justify-between"
+              >
                 <div>
-                  <p className="text-xs font-bold text-brand-charcoal">{rev.userName}</p>
-                  <p className="text-[10px] text-brand-sage font-medium flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span>Verified Buyer</span>
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(rev.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-brand-gold fill-brand-gold" />
+                    ))}
+                  </div>
+                  <h4 className="font-serif font-bold text-brand-charcoal text-sm mb-2">
+                    &ldquo;{rev.title}&rdquo;
+                  </h4>
+                  <p className="text-xs text-brand-stone leading-relaxed">
+                    &ldquo;{rev.content}&rdquo;
                   </p>
                 </div>
+
+                <div className="flex items-center gap-3 mt-6 pt-4 border-t border-brand-clay/40">
+                  <div className="relative w-9 h-9 rounded-full overflow-hidden bg-brand-sand shrink-0">
+                    {rev.userAvatar ? (
+                      <Image
+                        src={rev.userAvatar}
+                        alt={rev.userName || "Customer"}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center font-bold text-xs">
+                        {rev.userName?.charAt(0) || "U"}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-brand-charcoal">{rev.userName}</p>
+                    <p className="text-[10px] text-brand-sage font-medium flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>Verified Buyer</span>
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 7. SELLER CALL-TO-ACTION (Onboarding invite) */}

@@ -1,4 +1,6 @@
 import React from "react";
+import Link from "next/link";
+import { Sparkles, Store, RefreshCw } from "lucide-react";
 import prisma from "@/lib/prisma";
 import ProductCard from "@/components/ui/ProductCard";
 import MarketplaceFilterBar from "./MarketplaceFilterBar";
@@ -105,16 +107,57 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
 
       {/* Products Grid */}
       {products.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-3xl border border-brand-clay/70 p-8 shadow-soft">
-          <div className="w-16 h-16 rounded-full bg-brand-blush flex items-center justify-center mx-auto text-2xl mb-4">
-            🔍
+        <div className="text-center py-16 sm:py-20 bg-white rounded-3xl border border-brand-clay/70 p-8 shadow-soft max-w-2xl mx-auto space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-brand-blush flex items-center justify-center mx-auto text-brand-terracotta">
+            <Sparkles className="w-8 h-8" />
           </div>
-          <h3 className="font-serif text-xl font-bold text-brand-charcoal">
-            No artisan creations found
-          </h3>
-          <p className="text-sm text-brand-stone max-w-md mx-auto mt-2">
-            Try adjusting your search query, clearing filters, or browsing other craft categories.
-          </p>
+          {q || category || store || minPrice || maxPrice ? (
+            <>
+              <h3 className="font-serif text-2xl font-bold text-brand-charcoal">
+                No creations match your filter
+              </h3>
+              <p className="text-xs sm:text-sm text-brand-stone max-w-md mx-auto leading-relaxed">
+                Try adjusting your search keywords, price boundaries, or clearing active filters to discover more items.
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/marketplace"
+                  className="btn-outline text-xs px-5 py-2.5 inline-flex items-center gap-1.5"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Clear All Filters</span>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-terracotta/10 text-brand-terracotta">
+                <Store className="w-3.5 h-3.5" />
+                <span>Makers Wanted</span>
+              </div>
+              <h3 className="font-serif text-2xl sm:text-3xl font-bold text-brand-charcoal">
+                The Marketplace Is Awakening
+              </h3>
+              <p className="text-xs sm:text-sm text-brand-stone max-w-md mx-auto leading-relaxed">
+                All products on Mitti &amp; Muse are created and published directly by verified independent studio owners. No listings have been published yet.
+              </p>
+              <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
+                <Link
+                  href="/auth/owner/register"
+                  className="btn-primary text-xs px-6 py-3 shadow-clay flex items-center gap-2"
+                >
+                  <Store className="w-4 h-4" />
+                  <span>Start Your Store &amp; Publish First Product</span>
+                </Link>
+                <Link
+                  href="/auth/owner/login"
+                  className="btn-secondary text-xs px-5 py-3"
+                >
+                  <span>Owner Login</span>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

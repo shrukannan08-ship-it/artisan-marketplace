@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, isOwner } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
 
 export async function GET() {
   try {
     const user = await getCurrentUser();
-    if (!user || user.role !== "SELLER" || !user.storeId) {
+    if (!user || !isOwner(user) || !user.storeId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
@@ -32,7 +32,7 @@ export async function GET() {
 export async function PATCH(req: Request) {
   try {
     const user = await getCurrentUser();
-    if (!user || user.role !== "SELLER" || !user.storeId) {
+    if (!user || !isOwner(user) || !user.storeId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
