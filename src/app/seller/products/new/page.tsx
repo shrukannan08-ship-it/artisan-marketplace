@@ -222,13 +222,13 @@ export default function NewProductPage() {
       {/* Product Creation Form */}
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Details */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
-          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/30">
             Basic Information
           </h2>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Product Title *
             </label>
             <input
@@ -237,13 +237,13 @@ export default function NewProductPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Hand-thrown Matcha Bowl with Thumb Rest"
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Category *
               </label>
               {loadingCategories ? (
@@ -253,7 +253,7 @@ export default function NewProductPage() {
                   required
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                  className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 font-medium cursor-pointer"
                 >
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -265,7 +265,7 @@ export default function NewProductPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Initial Inventory Stock *
               </label>
               <input
@@ -274,13 +274,13 @@ export default function NewProductPage() {
                 required
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Description *
             </label>
             <textarea
@@ -289,20 +289,20 @@ export default function NewProductPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Share the story, tactile texture, dimensions, and feel of this piece..."
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 resize-none"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 resize-none"
             />
           </div>
         </div>
 
         {/* Pricing & Publication Status */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
-          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/30">
             Pricing &amp; Publication Status
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Price (USD $) *
               </label>
               <input
@@ -313,12 +313,12 @@ export default function NewProductPage() {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="45.00"
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 font-bold"
+                className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 font-bold"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Compare-at Price (optional)
               </label>
               <input
@@ -328,18 +328,18 @@ export default function NewProductPage() {
                 value={compareAtPrice}
                 onChange={(e) => setCompareAtPrice(e.target.value)}
                 placeholder="55.00"
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Listing Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as "ACTIVE" | "DRAFT")}
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 font-medium"
+                className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 font-bold cursor-pointer"
               >
                 <option value="ACTIVE">Active (Publish to Marketplace)</option>
                 <option value="DRAFT">Draft (Save in Private Atelier)</option>
@@ -349,8 +349,8 @@ export default function NewProductPage() {
         </div>
 
         {/* Product Imagery */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
-          <div className="flex items-center justify-between pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
+          <div className="flex items-center justify-between pb-2 border-b border-brand-clay/30">
             <div>
               <h2 className="font-serif text-lg font-bold text-brand-charcoal">
                 Photography &amp; Visuals
@@ -361,13 +361,13 @@ export default function NewProductPage() {
           </div>
 
           {uploadError && (
-            <div className="p-3 rounded-xl bg-red-50 text-red-700 text-xs border border-red-200">
+            <div className="p-3 rounded-2xl bg-red-50 text-red-700 text-xs border border-red-200 font-medium">
               {uploadError}
             </div>
           )}
 
           {/* File Upload Zone */}
-          <div className="border-2 border-dashed border-brand-clay rounded-2xl p-6 text-center hover:border-brand-terracotta transition-colors bg-brand-cream/30">
+          <div className="border-2 border-dashed border-brand-clay/70 rounded-2xl p-6 text-center hover:border-brand-terracotta transition-colors bg-brand-cream/30">
             <input
               type="file"
               id="product-image-upload"
@@ -380,7 +380,7 @@ export default function NewProductPage() {
               htmlFor="product-image-upload"
               className="cursor-pointer block space-y-2"
             >
-              <div className="w-12 h-12 rounded-2xl bg-white border border-brand-clay flex items-center justify-center mx-auto text-brand-terracotta shadow-soft">
+              <div className="w-12 h-12 rounded-2xl bg-white clay-card flex items-center justify-center mx-auto text-brand-terracotta shadow-clay-card">
                 {uploadingImage ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
@@ -400,7 +400,7 @@ export default function NewProductPage() {
 
           {/* Or Manual URL */}
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Or specify an Image URL directly
             </label>
             <input
@@ -408,14 +408,14 @@ export default function NewProductPage() {
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
               placeholder="https://images.unsplash.com/... or uploaded URL"
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
 
           {/* Image Preview */}
           {imageUrl && (
-            <div className="p-3 rounded-2xl bg-brand-cream/40 border border-brand-clay flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl overflow-hidden relative border border-brand-clay shrink-0">
+            <div className="p-3.5 rounded-2xl clay-card bg-brand-cream/40 flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl overflow-hidden relative border border-brand-clay shrink-0 shadow-xs">
                 <Image
                   src={imageUrl}
                   alt="Product preview"
@@ -425,7 +425,7 @@ export default function NewProductPage() {
                 />
               </div>
               <div className="text-xs truncate">
-                <span className="font-semibold text-brand-charcoal block">Image Loaded</span>
+                <span className="font-bold text-brand-charcoal block">Image Loaded</span>
                 <span className="text-brand-stone text-[11px] truncate block">{imageUrl}</span>
               </div>
             </div>
@@ -433,8 +433,8 @@ export default function NewProductPage() {
         </div>
 
         {/* Product Variants */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
-          <div className="flex items-center justify-between pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
+          <div className="flex items-center justify-between pb-2 border-b border-brand-clay/30">
             <div>
               <h2 className="font-serif text-lg font-bold text-brand-charcoal">
                 Variants &amp; Options (Optional)
@@ -444,9 +444,9 @@ export default function NewProductPage() {
             <button
               type="button"
               onClick={handleAddVariant}
-              className="px-3 py-1.5 rounded-full bg-brand-cream border border-brand-clay text-xs font-bold text-brand-charcoal hover:bg-brand-sand flex items-center gap-1"
+              className="px-3.5 py-1.5 rounded-full clay-pill text-xs font-bold text-brand-charcoal hover:shadow-clay-card flex items-center gap-1"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-3.5 h-3.5 text-brand-terracotta" />
               <span>Add Option</span>
             </button>
           </div>
@@ -460,7 +460,7 @@ export default function NewProductPage() {
               {variants.map((v, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-1 sm:grid-cols-5 gap-3 p-3 rounded-2xl bg-brand-cream/40 border border-brand-clay items-center text-xs"
+                  className="grid grid-cols-1 sm:grid-cols-5 gap-3 p-3.5 rounded-2xl clay-card bg-brand-cream/30 items-center text-xs"
                 >
                   <div>
                     <label className="text-[10px] font-bold text-brand-stone">Option Type</label>
@@ -469,7 +469,7 @@ export default function NewProductPage() {
                       value={v.name}
                       onChange={(e) => handleVariantChange(i, "name", e.target.value)}
                       placeholder="Size, Scent..."
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-brand-clay bg-white text-xs"
+                      className="w-full px-2.5 py-1.5 rounded-lg clay-input text-xs font-medium"
                     />
                   </div>
 
@@ -480,7 +480,7 @@ export default function NewProductPage() {
                       value={v.option}
                       onChange={(e) => handleVariantChange(i, "option", e.target.value)}
                       placeholder="Large, Rose Gold..."
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-brand-clay bg-white text-xs font-semibold"
+                      className="w-full px-2.5 py-1.5 rounded-lg clay-input text-xs font-bold"
                     />
                   </div>
 
@@ -492,7 +492,7 @@ export default function NewProductPage() {
                       value={v.priceDelta}
                       onChange={(e) => handleVariantChange(i, "priceDelta", e.target.value)}
                       placeholder="+0.00"
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-brand-clay bg-white text-xs"
+                      className="w-full px-2.5 py-1.5 rounded-lg clay-input text-xs font-semibold"
                     />
                   </div>
 
@@ -503,7 +503,7 @@ export default function NewProductPage() {
                       min="0"
                       value={v.stock}
                       onChange={(e) => handleVariantChange(i, "stock", e.target.value)}
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-brand-clay bg-white text-xs"
+                      className="w-full px-2.5 py-1.5 rounded-lg clay-input text-xs font-semibold"
                     />
                   </div>
 
@@ -511,10 +511,10 @@ export default function NewProductPage() {
                     <button
                       type="button"
                       onClick={() => handleRemoveVariant(i)}
-                      className="p-1.5 rounded-lg text-brand-stone hover:text-red-500 hover:bg-red-50"
+                      className="w-8 h-8 rounded-full clay-circle-btn inline-flex items-center justify-center text-brand-stone hover:text-red-500 hover:bg-red-50"
                       title="Remove variant"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -524,13 +524,13 @@ export default function NewProductPage() {
         </div>
 
         {/* Craftsmanship & Ethics */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
-          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/30">
             Craftsmanship &amp; Care Details
           </h2>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Materials &amp; Firing / Craft Techniques
             </label>
             <input
@@ -538,12 +538,12 @@ export default function NewProductPage() {
               value={craftDetails}
               onChange={(e) => setCraftDetails(e.target.value)}
               placeholder="e.g. Hand-thrown iron stoneware, fired to cone 6 (1220°C). 100% food safe."
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Care Instructions
             </label>
             <input
@@ -551,12 +551,12 @@ export default function NewProductPage() {
               value={careInstructions}
               onChange={(e) => setCareInstructions(e.target.value)}
               placeholder="e.g. Dishwasher and microwave safe. Gentle handwash recommended."
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Tags (comma-separated for search discovery)
             </label>
             <input
@@ -564,7 +564,7 @@ export default function NewProductPage() {
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               placeholder="pottery, mug, stoneware, kitchen, handmade"
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
         </div>
@@ -573,14 +573,14 @@ export default function NewProductPage() {
         <div className="flex items-center justify-end gap-4 pt-4">
           <Link
             href="/seller/products"
-            className="px-6 py-3 rounded-full border border-brand-clay text-xs font-semibold text-brand-stone hover:bg-brand-sand transition-colors"
+            className="px-6 py-3 rounded-full clay-pill text-xs font-bold text-brand-charcoal hover:shadow-clay-card transition-all"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={submitting}
-            className="btn-primary text-xs px-8 py-3.5 shadow-clay flex items-center gap-2 font-bold"
+            className="clay-pill-btn text-xs px-8 py-3.5 text-white flex items-center gap-2 font-bold tracking-wide"
           >
             {submitting ? (
               <span>Saving Creation...</span>

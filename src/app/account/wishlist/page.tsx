@@ -25,9 +25,9 @@ export default function WishlistPage() {
       </div>
 
       {wishlistCount === 0 ? (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-12 text-center space-y-4 shadow-soft max-w-xl mx-auto">
-          <div className="w-16 h-16 rounded-full bg-brand-blush flex items-center justify-center mx-auto text-brand-terracotta">
-            <Heart className="w-8 h-8" />
+        <div className="clay-card rounded-[32px] p-12 text-center space-y-4 bg-white max-w-xl mx-auto">
+          <div className="w-16 h-16 rounded-[22px] bg-brand-peach/60 flex items-center justify-center mx-auto text-brand-terracotta shadow-clay-card border-t border-l border-white/80">
+            <Heart className="w-8 h-8 fill-brand-terracotta" />
           </div>
           <h3 className="font-serif text-xl font-bold text-brand-charcoal">
             Your Wishlist is Empty
@@ -35,7 +35,7 @@ export default function WishlistPage() {
           <p className="text-xs text-brand-stone max-w-sm mx-auto leading-relaxed">
             Tap the heart icon on any product in the marketplace or storefronts to save it to your wishlist for later.
           </p>
-          <Link href="/marketplace" className="btn-primary text-xs px-6 py-2.5 inline-flex items-center gap-2">
+          <Link href="/marketplace" className="clay-pill-btn text-xs px-6 py-2.5 inline-flex items-center gap-2">
             <span>Explore Marketplace</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>

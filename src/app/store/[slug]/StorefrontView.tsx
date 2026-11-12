@@ -50,8 +50,8 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
 
   return (
     <div className="space-y-12 pb-16">
-      {/* 1. STOREFRONT HERO & BANNER (Reference 3 & 2 style) */}
-      <div className="relative rounded-3xl sm:rounded-4xl overflow-hidden shadow-card border border-brand-clay/80 bg-white">
+      {/* 1. STOREFRONT HERO & BANNER */}
+      <div className="relative clay-card rounded-[32px] sm:rounded-[36px] overflow-hidden bg-white">
         {/* Banner Cover */}
         <div className="relative h-60 sm:h-80 w-full bg-brand-sand">
           {store.bannerUrl && (
@@ -63,16 +63,16 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
               className="object-cover"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/70 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/80 via-black/25 to-transparent" />
 
           {/* Share Button on Top Right */}
           <button
             onClick={handleShare}
-            className="absolute top-4 right-4 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-xs text-xs font-semibold text-brand-charcoal hover:bg-white shadow-subtle flex items-center gap-1.5 transition-all"
+            className="absolute top-4 right-4 px-4 py-2 rounded-full clay-pill text-xs font-bold text-brand-charcoal hover:shadow-clay-card flex items-center gap-1.5 transition-all bg-white/95"
           >
             {copiedLink ? (
               <>
-                <Check className="w-3.5 h-3.5 text-brand-sage" />
+                <Check className="w-3.5 h-3.5 text-emerald-700" />
                 <span>Link Copied!</span>
               </>
             ) : (
@@ -88,29 +88,31 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
         <div className="px-6 sm:px-10 pb-8 pt-4 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 -mt-16 sm:-mt-20 relative z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-end gap-5">
             {/* Logo Avatar */}
-            <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl overflow-hidden border-4 border-white shadow-elevated bg-white shrink-0">
-              {store.logoUrl ? (
-                <Image
-                  src={store.logoUrl}
-                  alt={store.storeName}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-brand-terracotta text-white flex items-center justify-center font-serif text-3xl font-bold">
-                  {store.storeName.charAt(0)}
-                </div>
-              )}
+            <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl overflow-hidden clay-card p-1 bg-white border-2 border-white/90 shrink-0">
+              <div className="relative w-full h-full rounded-[22px] overflow-hidden">
+                {store.logoUrl ? (
+                  <Image
+                    src={store.logoUrl}
+                    alt={store.storeName}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-brand-terracotta to-brand-rust text-white flex items-center justify-center font-serif text-3xl font-bold">
+                    {store.storeName.charAt(0)}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Title & Stats */}
             <div className="space-y-1 sm:mb-2">
               <div className="flex items-center gap-2">
-                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-charcoal">
+                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-charcoal tracking-tight">
                   {store.storeName}
                 </h1>
-                <span className="p-1 rounded-full bg-brand-sage/20 text-brand-sage" title="Verified Independent Artisan">
-                  <Sparkles className="w-4 h-4 fill-brand-sage" />
+                <span className="p-1 rounded-full bg-brand-mint text-emerald-800 shadow-xs" title="Verified Independent Artisan">
+                  <Sparkles className="w-4 h-4 fill-emerald-700" />
                 </span>
               </div>
 
@@ -120,17 +122,17 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
                 </p>
               )}
 
-              <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-brand-stone pt-1">
+              <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-brand-stone pt-1">
                 {store.location && (
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5 text-brand-terracotta" />
                     <span>{store.location}</span>
                   </span>
                 )}
-                <span className="flex items-center gap-1 text-brand-charcoal font-semibold">
+                <span className="flex items-center gap-1 text-brand-charcoal bg-brand-cream/80 px-2.5 py-0.5 rounded-full border border-brand-clay/40 shadow-xs">
                   <Star className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
                   <span>{store.rating.toFixed(1)}</span>
-                  <span className="text-brand-stone font-normal">({store.reviewCount} reviews)</span>
+                  <span className="text-brand-stone font-normal text-[11px]">({store.reviewCount} reviews)</span>
                 </span>
                 {store.instagram && (
                   <a
@@ -151,7 +153,7 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
           <div className="sm:mb-2 flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={() => setIsEnquiryModalOpen(true)}
-              className="btn-primary text-xs px-6 py-3 shadow-clay w-full sm:w-auto flex items-center justify-center gap-2"
+              className="clay-pill-btn text-xs px-6 py-3 text-white font-bold w-full sm:w-auto flex items-center justify-center gap-2"
             >
               <MessageCircle className="w-4 h-4" />
               <span>Contact Artisan / Custom Request</span>
@@ -159,14 +161,14 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
           </div>
         </div>
 
-        {/* Store Navigation Tabs (Reference 3 style) */}
-        <div className="flex items-center gap-8 px-6 sm:px-10 border-t border-brand-clay/60 text-xs font-semibold">
+        {/* Store Navigation Tabs (Tactile clay buttons) */}
+        <div className="flex items-center gap-3 px-6 sm:px-10 py-3.5 border-t border-brand-clay/30 text-xs overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveTab("products")}
-            className={`py-4 border-b-2 transition-all flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-full font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === "products"
-                ? "border-brand-terracotta text-brand-terracotta"
-                : "border-transparent text-brand-stone hover:text-brand-charcoal"
+                ? "clay-pill-btn text-white"
+                : "clay-pill text-brand-stone hover:text-brand-charcoal"
             }`}
           >
             <ShoppingBag className="w-3.5 h-3.5" />
@@ -174,10 +176,10 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
           </button>
           <button
             onClick={() => setActiveTab("story")}
-            className={`py-4 border-b-2 transition-all flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-full font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === "story"
-                ? "border-brand-terracotta text-brand-terracotta"
-                : "border-transparent text-brand-stone hover:text-brand-charcoal"
+                ? "clay-pill-btn text-white"
+                : "clay-pill text-brand-stone hover:text-brand-charcoal"
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
@@ -185,10 +187,10 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
           </button>
           <button
             onClick={() => setActiveTab("policies")}
-            className={`py-4 border-b-2 transition-all flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-full font-bold transition-all flex items-center gap-1.5 shrink-0 ${
               activeTab === "policies"
-                ? "border-brand-terracotta text-brand-terracotta"
-                : "border-transparent text-brand-stone hover:text-brand-charcoal"
+                ? "clay-pill-btn text-white"
+                : "clay-pill text-brand-stone hover:text-brand-charcoal"
             }`}
           >
             <Truck className="w-3.5 h-3.5" />
@@ -205,10 +207,10 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setSelectedCategory("ALL")}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
+                className={`px-4 py-2 rounded-full text-xs font-bold shrink-0 transition-all ${
                   selectedCategory === "ALL"
-                    ? "bg-brand-terracotta text-white shadow-xs"
-                    : "bg-white border border-brand-clay text-brand-stone hover:text-brand-charcoal"
+                    ? "clay-pill-btn text-white"
+                    : "clay-pill text-brand-stone hover:text-brand-charcoal"
                 }`}
               >
                 All Products ({products.length})
@@ -217,10 +219,10 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
                 <button
                   key={catName}
                   onClick={() => setSelectedCategory(catName)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
+                  className={`px-4 py-2 rounded-full text-xs font-bold shrink-0 transition-all ${
                     selectedCategory === catName
-                      ? "bg-brand-terracotta text-white shadow-xs"
-                      : "bg-white border border-brand-clay text-brand-stone hover:text-brand-charcoal"
+                      ? "clay-pill-btn text-white"
+                      : "clay-pill text-brand-stone hover:text-brand-charcoal"
                   }`}
                 >
                   {catName}
@@ -231,8 +233,9 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
 
           {/* Store Products Grid */}
           {filteredProducts.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-brand-clay p-8">
-              <p className="text-sm text-brand-stone">No products available in this category.</p>
+            <div className="text-center py-16 clay-card rounded-[32px] p-8 max-w-md mx-auto space-y-2 bg-white">
+              <p className="font-serif text-lg font-bold text-brand-charcoal">Catalog Empty</p>
+              <p className="text-xs text-brand-stone">No products available in this category.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -245,7 +248,7 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
       )}
 
       {activeTab === "story" && (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-8 sm:p-12 shadow-soft space-y-8 max-w-4xl mx-auto">
+        <div className="clay-card rounded-[32px] p-8 sm:p-12 space-y-8 max-w-4xl mx-auto bg-white">
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-brand-terracotta">
               Behind The Craft
@@ -260,7 +263,7 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
           </p>
 
           {store.craftsmanship && (
-            <div className="p-6 rounded-2xl bg-brand-cream/80 border border-brand-clay/60 space-y-2">
+            <div className="p-6 rounded-2xl clay-card bg-brand-cream/80 space-y-2">
               <h3 className="font-serif text-lg font-bold text-brand-charcoal">
                 Craftsmanship &amp; Material Ethics
               </h3>
@@ -270,11 +273,11 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
             </div>
           )}
 
-          <div className="pt-6 border-t border-brand-clay/50 flex items-center justify-between">
+          <div className="pt-6 border-t border-brand-clay/30 flex items-center justify-between">
             <span className="text-xs text-brand-stone">Interested in a custom project?</span>
             <button
               onClick={() => setIsEnquiryModalOpen(true)}
-              className="btn-primary text-xs px-6 py-2.5"
+              className="clay-pill-btn text-xs px-6 py-2.5 text-white font-bold"
             >
               Send Custom Commission
             </button>
@@ -283,7 +286,7 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
       )}
 
       {activeTab === "policies" && (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-8 sm:p-12 shadow-soft space-y-8 max-w-4xl mx-auto">
+        <div className="clay-card rounded-[32px] p-8 sm:p-12 space-y-8 max-w-4xl mx-auto bg-white">
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-brand-terracotta">
               Store Commitments
@@ -294,7 +297,7 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl bg-brand-cream/60 border border-brand-clay/60 space-y-3">
+            <div className="p-6 rounded-2xl clay-card bg-brand-cream/60 space-y-3">
               <div className="flex items-center gap-2 text-brand-charcoal font-bold text-sm">
                 <Truck className="w-5 h-5 text-brand-terracotta" />
                 <span>Shipping Policy</span>
@@ -304,9 +307,9 @@ export default function StorefrontView({ store, products }: StorefrontViewProps)
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-brand-cream/60 border border-brand-clay/60 space-y-3">
+            <div className="p-6 rounded-2xl clay-card bg-brand-cream/60 space-y-3">
               <div className="flex items-center gap-2 text-brand-charcoal font-bold text-sm">
-                <RotateCcw className="w-5 h-5 text-brand-sage" />
+                <RotateCcw className="w-5 h-5 text-emerald-700" />
                 <span>Returns &amp; Exchanges</span>
               </div>
               <p className="text-xs text-brand-stone leading-relaxed">

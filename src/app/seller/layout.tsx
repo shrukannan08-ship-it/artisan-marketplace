@@ -32,17 +32,17 @@ export default async function SellerLayout({
   const storeName = user.storeName || "Your Studio";
 
   return (
-    <div className="min-h-screen bg-[#F6F2EC] flex flex-col md:flex-row">
+    <div className="min-h-screen bg-brand-bisque flex flex-col md:flex-row">
       {/* Sidebar Navigation (Tactile Reference 1 & 4 style) */}
-      <aside className="w-full md:w-64 bg-white border-r border-brand-clay/80 p-6 flex flex-col justify-between shrink-0">
+      <aside className="w-full md:w-64 bg-white/95 backdrop-blur-md border-r border-brand-clay/30 p-6 flex flex-col justify-between shrink-0 shadow-subtle">
         <div className="space-y-6">
           {/* Studio Brand Header */}
-          <div className="p-4 rounded-2xl bg-brand-sand/60 border border-brand-clay/70">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-terracotta flex items-center gap-1">
-              <Store className="w-3 h-3" />
+          <div className="p-4 rounded-2xl bg-brand-sand/50 border border-brand-clay/30 shadow-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-terracotta flex items-center gap-1.5">
+              <Store className="w-3.5 h-3.5" />
               <span>Seller Studio</span>
             </span>
-            <h2 className="font-serif text-lg font-bold text-brand-charcoal mt-0.5 truncate">
+            <h2 className="font-serif text-lg font-bold text-brand-charcoal mt-1 truncate">
               {storeName}
             </h2>
             <Link
@@ -59,7 +59,7 @@ export default async function SellerLayout({
           <nav className="space-y-1.5 text-xs font-semibold text-brand-stone">
             <Link
               href="/seller/dashboard"
-              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl hover:bg-brand-cream hover:text-brand-charcoal transition-colors"
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl hover:bg-white hover:text-brand-charcoal hover:shadow-clay-card transition-all"
             >
               <LayoutDashboard className="w-4 h-4 text-brand-terracotta" />
               <span>Studio Overview</span>
@@ -67,7 +67,7 @@ export default async function SellerLayout({
 
             <Link
               href="/seller/products"
-              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl hover:bg-brand-cream hover:text-brand-charcoal transition-colors"
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl hover:bg-white hover:text-brand-charcoal hover:shadow-clay-card transition-all"
             >
               <Package className="w-4 h-4 text-brand-sage" />
               <span>Products &amp; Stock</span>
@@ -75,7 +75,7 @@ export default async function SellerLayout({
 
             <Link
               href="/seller/orders"
-              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl hover:bg-brand-cream hover:text-brand-charcoal transition-colors"
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl hover:bg-white hover:text-brand-charcoal hover:shadow-clay-card transition-all"
             >
               <ShoppingBag className="w-4 h-4 text-brand-gold" />
               <span>Orders &amp; Fulfillment</span>
@@ -83,7 +83,7 @@ export default async function SellerLayout({
 
             <Link
               href="/seller/storefront"
-              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl hover:bg-brand-cream hover:text-brand-charcoal transition-colors"
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl hover:bg-white hover:text-brand-charcoal hover:shadow-clay-card transition-all"
             >
               <Palette className="w-4 h-4 text-brand-rose" />
               <span>Storefront Customizer</span>
@@ -91,7 +91,7 @@ export default async function SellerLayout({
 
             <Link
               href="/seller/enquiries"
-              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl hover:bg-brand-cream hover:text-brand-charcoal transition-colors"
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl hover:bg-white hover:text-brand-charcoal hover:shadow-clay-card transition-all"
             >
               <MessageCircle className="w-4 h-4 text-brand-lavender" />
               <span>Custom Enquiries</span>
@@ -100,10 +100,10 @@ export default async function SellerLayout({
         </div>
 
         {/* Bottom CTA */}
-        <div className="pt-6 border-t border-brand-clay/60 space-y-3">
+        <div className="pt-6 border-t border-brand-clay/30 space-y-3">
           <Link
             href="/seller/products/new"
-            className="w-full btn-primary py-2.5 text-xs shadow-clay flex items-center justify-center gap-1.5 font-bold"
+            className="w-full clay-pill-btn py-2.5 text-xs flex items-center justify-center gap-1.5 font-bold"
           >
             <Plus className="w-4 h-4" />
             <span>Add New Product</span>
@@ -111,7 +111,7 @@ export default async function SellerLayout({
 
           <Link
             href="/"
-            className="block text-center text-xs font-medium text-brand-stone hover:text-brand-charcoal transition-colors"
+            className="block text-center text-xs font-semibold text-brand-stone hover:text-brand-charcoal transition-colors"
           >
             &larr; Return to Marketplace
           </Link>

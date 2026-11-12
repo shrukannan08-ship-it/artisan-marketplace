@@ -83,30 +83,30 @@ export default function CartPage() {
       </div>
 
       {/* Free Shipping Meter (Reference 2 style) */}
-      <div className="p-4 rounded-2xl bg-white border border-brand-clay/70 shadow-soft">
-        <div className="flex items-center justify-between text-xs font-medium text-brand-charcoal mb-2">
+      <div className="p-4 rounded-2xl clay-card bg-white">
+        <div className="flex items-center justify-between text-xs font-bold text-brand-charcoal mb-2">
           <span className="flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-brand-gold" />
+            <Sparkles className="w-4 h-4 text-amber-600" />
             {remainingForFreeShipping > 0 ? (
               <>
                 Add <strong className="text-brand-terracotta">{formatCurrency(remainingForFreeShipping)}</strong> more to unlock Free Shipping!
               </>
             ) : (
-              <span className="text-brand-sage font-bold">✨ You have unlocked FREE Shipping!</span>
+              <span className="text-emerald-700 font-bold">✨ You have unlocked FREE Shipping!</span>
             )}
           </span>
-          <span className="text-brand-stone">{Math.round(freeShippingProgress)}%</span>
+          <span className="text-brand-stone font-semibold">{Math.round(freeShippingProgress)}%</span>
         </div>
-        <div className="w-full bg-brand-clay/40 h-2.5 rounded-full overflow-hidden">
+        <div className="w-full bg-brand-clay/30 h-2.5 rounded-full overflow-hidden clay-input p-0.5">
           <div
-            className="bg-brand-terracotta h-full rounded-full transition-all duration-300"
+            className="bg-gradient-to-r from-brand-terracotta to-brand-rust h-full rounded-full transition-all duration-300"
             style={{ width: `${freeShippingProgress}%` }}
           />
         </div>
       </div>
 
       {/* Cart Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
         {/* Left: Cart Items */}
         <div className="lg:col-span-8 space-y-4">
           {items.map((item) => {
@@ -120,10 +120,10 @@ export default function CartPage() {
             return (
               <div
                 key={item.id}
-                className="bg-white rounded-3xl border border-brand-clay/70 p-5 shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"
+                className="clay-card rounded-[28px] p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 bg-white"
               >
                 <div className="flex items-center gap-4">
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-brand-sand shrink-0">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-[20px] overflow-hidden bg-brand-sand shrink-0 shadow-xs">
                     <Image
                       src={primaryImage}
                       alt={item.product.title}
@@ -135,47 +135,49 @@ export default function CartPage() {
                     <h3 className="font-serif font-bold text-base text-brand-charcoal">
                       <Link
                         href={`/product/${item.product.slug}`}
-                        className="hover:text-brand-terracotta"
+                        className="hover:text-brand-terracotta transition-colors"
                       >
                         {item.product.title}
                       </Link>
                     </h3>
 
                     {item.variant && (
-                      <p className="text-xs text-brand-stone mt-0.5">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-butter text-brand-charcoal mt-1">
                         {item.variant.name}: {item.variant.option}
-                      </p>
+                      </span>
                     )}
 
                     {item.product.store && (
-                      <p className="text-[11px] font-medium text-brand-terracotta mt-0.5">
-                        By {item.product.store.storeName}
+                      <p className="text-[11px] font-medium text-brand-terracotta mt-1">
+                        Studio: {item.product.store.storeName}
                       </p>
                     )}
 
-                    <p className="text-xs font-semibold text-brand-charcoal mt-2">
+                    <p className="text-xs font-bold text-brand-charcoal mt-1">
                       {formatCurrency(itemPrice)} each
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-brand-clay/40">
-                  {/* Quantity */}
-                  <div className="flex items-center border border-brand-clay rounded-full bg-brand-cream/60 px-2.5 py-1">
+                <div className="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-brand-clay/30">
+                  {/* Quantity Stepper */}
+                  <div className="flex items-center clay-card rounded-full px-2 py-1 shadow-clay-card bg-white">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="p-1 text-brand-stone hover:text-brand-charcoal"
+                      className="w-6 h-6 rounded-full clay-circle-btn flex items-center justify-center text-brand-stone hover:text-brand-charcoal"
+                      aria-label="Decrease quantity"
                     >
-                      <Minus className="w-3.5 h-3.5" />
+                      <Minus className="w-3 h-3" />
                     </button>
-                    <span className="w-8 text-center text-xs font-bold text-brand-charcoal">
+                    <span className="w-7 text-center text-xs font-bold text-brand-charcoal">
                       {item.quantity}
                     </span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="p-1 text-brand-stone hover:text-brand-charcoal"
+                      className="w-6 h-6 rounded-full clay-circle-btn flex items-center justify-center text-brand-stone hover:text-brand-charcoal"
+                      aria-label="Increase quantity"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="w-3 h-3" />
                     </button>
                   </div>
 
@@ -185,10 +187,10 @@ export default function CartPage() {
 
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="p-2 text-brand-stone hover:text-red-500 transition-colors rounded-full hover:bg-red-50"
+                    className="w-9 h-9 rounded-full clay-circle-btn flex items-center justify-center text-brand-stone hover:text-red-500 hover:bg-red-50 transition-colors"
                     title="Remove item"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -197,7 +199,7 @@ export default function CartPage() {
         </div>
 
         {/* Right: Order Summary */}
-        <div className="lg:col-span-4 bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-card space-y-6">
+        <div className="lg:col-span-4 clay-card rounded-[32px] p-6 sm:p-8 space-y-6 bg-white">
           <h2 className="font-serif text-xl font-bold text-brand-charcoal">
             Order Summary
           </h2>
@@ -205,13 +207,13 @@ export default function CartPage() {
           <div className="space-y-3 text-xs text-brand-stone">
             <div className="flex items-center justify-between">
               <span>Subtotal</span>
-              <span className="font-semibold text-brand-charcoal text-sm">
+              <span className="font-bold text-brand-charcoal text-sm">
                 {formatCurrency(subtotal)}
               </span>
             </div>
 
             {couponApplied && (
-              <div className="flex items-center justify-between text-brand-sage font-medium">
+              <div className="flex items-center justify-between text-emerald-700 font-bold">
                 <span>Artisan Promo (10% off)</span>
                 <span>-{formatCurrency(discountAmount)}</span>
               </div>
@@ -219,21 +221,21 @@ export default function CartPage() {
 
             <div className="flex items-center justify-between">
               <span>Estimated Shipping</span>
-              <span className="font-semibold text-brand-charcoal">
+              <span className="font-bold text-brand-charcoal">
                 {shippingAmount === 0 ? "FREE" : formatCurrency(shippingAmount)}
               </span>
             </div>
 
             <div className="flex items-center justify-between">
               <span>Estimated Sales Tax (8%)</span>
-              <span className="font-semibold text-brand-charcoal">
+              <span className="font-bold text-brand-charcoal">
                 {formatCurrency(estimatedTax)}
               </span>
             </div>
 
-            <div className="pt-3 border-t border-brand-clay/60 flex items-center justify-between text-sm font-bold text-brand-charcoal">
+            <div className="pt-3 border-t border-brand-clay/30 flex items-center justify-between text-sm font-bold text-brand-charcoal">
               <span>Total</span>
-              <span className="font-serif text-xl text-brand-terracotta">
+              <span className="font-serif text-2xl text-brand-terracotta">
                 {formatCurrency(finalTotal)}
               </span>
             </div>
@@ -246,21 +248,21 @@ export default function CartPage() {
                 type="text"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
-                placeholder="Discount code (try MAKER10)"
-                className="flex-1 px-3 py-2 text-xs rounded-xl bg-brand-cream/60 border border-brand-clay focus:outline-none uppercase"
+                placeholder="PROMO CODE (MAKER10)"
+                className="flex-1 px-3 py-2 text-xs rounded-xl clay-input uppercase font-bold"
               />
               <button
                 type="submit"
-                className="px-4 py-2 rounded-xl bg-brand-cream border border-brand-clay text-xs font-semibold hover:bg-brand-sand text-brand-charcoal"
+                className="px-4 py-2 rounded-full clay-pill text-xs font-bold text-brand-charcoal hover:shadow-clay-card"
               >
                 Apply
               </button>
             </div>
             {couponError && (
-              <p className="text-[11px] text-red-600 mt-1">{couponError}</p>
+              <p className="text-[11px] text-red-600 mt-1 font-medium">{couponError}</p>
             )}
             {couponApplied && (
-              <p className="text-[11px] text-brand-sage mt-1 font-medium">
+              <p className="text-[11px] text-emerald-700 mt-1 font-bold">
                 ✓ Coupon MAKER10 applied successfully!
               </p>
             )}
@@ -269,15 +271,15 @@ export default function CartPage() {
           {/* Checkout CTA */}
           <Link
             href="/checkout"
-            className="w-full btn-primary py-4 text-sm shadow-clay flex items-center justify-center gap-2"
+            className="w-full clay-pill-btn py-3.5 text-xs sm:text-sm text-white flex items-center justify-center gap-2 font-bold tracking-wide"
           >
             <span>Proceed to Checkout</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
 
-          <div className="pt-2 flex items-center justify-center gap-4 text-[11px] text-brand-stone">
+          <div className="pt-2 flex items-center justify-center gap-4 text-[11px] text-brand-stone font-medium">
             <span className="flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-brand-sage" />
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
               <span>Encrypted</span>
             </span>
             <span>•</span>

@@ -4,13 +4,16 @@
 
 @layer base {
   :root {
-    --brand-cream: #FAF7F2;
-    --brand-surface: #FFFFFF;
+    --brand-cream: #F7EFE9;
+    --brand-surface: #FCFAF7;
     --brand-terracotta: #C86D51;
     --brand-sage: #5E8773;
     --brand-charcoal: #28231F;
     --brand-stone: #6E6660;
     --brand-clay: #EADCD2;
+    --brand-peach: #F3A894;
+    --brand-butter: #FCE69E;
+    --brand-mint: #BDE2D5;
   }
 
   body {
@@ -22,39 +25,51 @@
   }
 
   ::selection {
-    background-color: rgba(200, 109, 81, 0.2);
+    background-color: rgba(243, 168, 148, 0.35);
     color: #28231F;
   }
 }
 
-/* Claymorphic and tactile soft UI utilities inspired by reference designs */
+/* Claymorphic and tactile soft UI utilities inspired directly by the reference design */
 @layer components {
   .clay-card {
-    @apply bg-white rounded-3xl border border-brand-clay/70 shadow-soft transition-all duration-300;
+    @apply bg-[#FCFAF7] rounded-[28px] border-t border-l border-white/95 border-r border-b border-[#ebdcd2]/80 shadow-clay-card transition-all duration-300;
   }
 
   .clay-card-hover {
-    @apply clay-card hover:shadow-card hover:-translate-y-1 hover:border-brand-rose/60;
+    @apply clay-card hover:shadow-clay-card-hover hover:-translate-y-1 hover:border-[#dfb0a5]/80;
   }
 
   .clay-pill {
-    @apply inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium border border-brand-clay/80 bg-white/90 shadow-subtle backdrop-blur-xs;
+    @apply inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border-t border-l border-white/90 border-r border-b border-brand-clay/70 bg-[#FAF4ED] shadow-clay-pill transition-all;
   }
 
   .clay-stat-card {
-    @apply rounded-3xl bg-white/90 border border-brand-clay/60 p-5 shadow-soft transition-all;
+    @apply rounded-[28px] bg-[#FCFAF7] border-t border-l border-white/95 border-r border-b border-brand-clay/80 p-5 sm:p-6 shadow-clay-card transition-all;
+  }
+
+  .clay-pill-btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs tracking-wide shadow-clay-pill active:scale-95 transition-all duration-200 border-t border-white/40;
+  }
+
+  .clay-circle-btn {
+    @apply w-9 h-9 rounded-full flex items-center justify-center bg-white/90 border-t border-l border-white border-r border-b border-brand-clay/70 shadow-clay-circle hover:scale-105 active:scale-95 transition-all text-brand-charcoal;
+  }
+
+  .clay-input {
+    @apply w-full px-4 py-2.5 text-xs rounded-2xl bg-[#FAF4ED] border border-brand-clay/80 shadow-clay-inset focus:outline-none focus:ring-2 focus:ring-brand-peach/40 focus:border-brand-peach transition-all text-brand-charcoal;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand-terracotta text-white font-medium text-sm tracking-wide shadow-clay hover:bg-brand-terracotta-dark active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-gradient-to-b from-[#df7c64] to-[#C86D51] text-white font-bold text-sm tracking-wide shadow-clay-pill hover:brightness-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-t border-white/30;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white text-brand-charcoal font-medium text-sm tracking-wide border border-brand-clay hover:bg-brand-sand active:scale-[0.98] transition-all duration-200 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#FCFAF7] text-brand-charcoal font-bold text-sm tracking-wide border-t border-l border-white/90 border-r border-b border-brand-clay/80 shadow-clay-pill hover:bg-brand-sand active:scale-[0.98] transition-all duration-200 disabled:opacity-50;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-brand-terracotta text-brand-terracotta font-medium text-sm hover:bg-brand-terracotta-light transition-all;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-brand-terracotta text-brand-terracotta font-bold text-sm hover:bg-brand-terracotta-light transition-all shadow-subtle;
   }
 
   .editorial-title {
@@ -62,19 +77,20 @@
   }
 }
 
-/* Custom scrollbar */
+/* Custom tactile scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF7F2;
+  background: #F7EFE9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D9CCC1;
+  background: #DFD0C4;
   border-radius: 9999px;
+  border: 2px solid #F7EFE9;
 }
 
 ::-webkit-scrollbar-thumb:hover {

@@ -118,7 +118,7 @@ export default function SellerProductsPage() {
 
         <Link
           href="/seller/products/new"
-          className="btn-primary text-xs px-6 py-2.5 shadow-clay flex items-center gap-1.5"
+          className="clay-pill-btn text-xs px-6 py-2.5 text-white font-bold flex items-center gap-1.5"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Creation</span>
@@ -127,43 +127,43 @@ export default function SellerProductsPage() {
 
       {/* Catalog Table */}
       {products.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-12 text-center space-y-4 shadow-soft">
-          <div className="w-16 h-16 rounded-full bg-brand-sand flex items-center justify-center mx-auto text-brand-stone">
+        <div className="clay-card rounded-[32px] p-12 text-center space-y-4 bg-white">
+          <div className="w-16 h-16 rounded-[22px] bg-brand-butter flex items-center justify-center mx-auto text-amber-800 shadow-clay-card border-t border-l border-white/80">
             <Package className="w-8 h-8" />
           </div>
           <h3 className="font-serif text-xl font-bold text-brand-charcoal">
             No products listed yet
           </h3>
-          <p className="text-xs text-brand-stone max-w-sm mx-auto">
+          <p className="text-xs text-brand-stone max-w-sm mx-auto leading-relaxed">
             Your studio catalog is currently empty. Click &ldquo;Add New Creation&rdquo; to publish your first handcrafted piece!
           </p>
-          <Link href="/seller/products/new" className="btn-primary text-xs px-6 py-2.5 inline-block">
+          <Link href="/seller/products/new" className="clay-pill-btn text-xs px-6 py-2.5 text-white font-bold inline-block">
             Create First Product
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 overflow-hidden shadow-soft">
+        <div className="clay-card rounded-[32px] overflow-hidden bg-white">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-brand-cream/80 border-b border-brand-clay/50 text-brand-stone uppercase tracking-wider text-[10px]">
+              <thead className="bg-brand-cream/60 border-b border-brand-clay/30 text-brand-stone uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th className="py-3.5 px-6 font-semibold">Product</th>
-                  <th className="py-3.5 px-4 font-semibold">Category</th>
-                  <th className="py-3.5 px-4 font-semibold">Price</th>
-                  <th className="py-3.5 px-4 font-semibold">Stock Level</th>
-                  <th className="py-3.5 px-4 font-semibold">Status</th>
-                  <th className="py-3.5 px-6 font-semibold text-right">Actions</th>
+                  <th className="py-3.5 px-6 font-bold">Product</th>
+                  <th className="py-3.5 px-4 font-bold">Category</th>
+                  <th className="py-3.5 px-4 font-bold">Price</th>
+                  <th className="py-3.5 px-4 font-bold">Stock Level</th>
+                  <th className="py-3.5 px-4 font-bold">Status</th>
+                  <th className="py-3.5 px-6 font-bold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-brand-clay/30">
+              <tbody className="divide-y divide-brand-clay/20">
                 {products.map((p) => {
                   const isLow = p.stock <= p.lowStockThreshold;
                   return (
-                    <tr key={p.id} className="hover:bg-brand-cream/30 transition-colors">
+                    <tr key={p.id} className="hover:bg-brand-cream/20 transition-colors">
                       {/* Product Thumbnail & Title */}
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-brand-sand shrink-0">
+                          <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-brand-sand shrink-0 shadow-xs">
                             {p.images[0]?.url ? (
                               <Image
                                 src={p.images[0].url}
@@ -182,7 +182,7 @@ export default function SellerProductsPage() {
                               {p.title}
                             </p>
                             {p.variants && p.variants.length > 0 && (
-                              <p className="text-[10px] text-brand-stone">
+                              <p className="text-[10px] text-brand-stone font-medium">
                                 {p.variants.length} options ({p.variants.map((v) => v.option).join(", ")})
                               </p>
                             )}
@@ -191,7 +191,7 @@ export default function SellerProductsPage() {
                       </td>
 
                       {/* Category */}
-                      <td className="py-4 px-4 text-brand-stone">
+                      <td className="py-4 px-4 text-brand-stone font-medium">
                         {p.category?.name || "Craft"}
                       </td>
 
@@ -213,10 +213,10 @@ export default function SellerProductsPage() {
                                 handleUpdateStock(p.id, val);
                               }
                             }}
-                            className={`w-16 px-2 py-1 text-center font-bold text-xs rounded-lg border ${
+                            className={`w-16 px-2 py-1 text-center font-bold text-xs rounded-xl clay-input ${
                               isLow
-                                ? "border-amber-300 bg-amber-50 text-amber-900"
-                                : "border-brand-clay bg-brand-cream/50 text-brand-charcoal"
+                                ? "bg-amber-50 text-amber-900 border-amber-300"
+                                : "text-brand-charcoal"
                             }`}
                           />
                           {isLow && (
@@ -231,10 +231,10 @@ export default function SellerProductsPage() {
                       <td className="py-4 px-4">
                         <button
                           onClick={() => handleToggleStatus(p.id, p.status)}
-                          className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${
+                          className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all shadow-xs ${
                             p.status === "ACTIVE"
-                              ? "bg-brand-sage-light text-brand-sage-dark border border-brand-sage/20 hover:bg-brand-sage hover:text-white"
-                              : "bg-stone-100 text-stone-600 border border-stone-200 hover:bg-stone-200"
+                              ? "bg-brand-mint text-emerald-900 hover:bg-emerald-200"
+                              : "clay-pill text-brand-stone hover:text-brand-charcoal"
                           }`}
                         >
                           {p.status}
@@ -247,14 +247,14 @@ export default function SellerProductsPage() {
                           <Link
                             href={`/product/${p.slug}`}
                             target="_blank"
-                            className="p-1.5 rounded-lg text-brand-stone hover:text-brand-terracotta hover:bg-brand-sand transition-colors"
+                            className="w-8 h-8 rounded-full clay-circle-btn flex items-center justify-center text-brand-stone hover:text-brand-terracotta transition-colors"
                             title="View public page"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                           </Link>
                           <button
                             onClick={() => handleDelete(p.id, p.title)}
-                            className="p-1.5 rounded-lg text-brand-stone hover:text-red-500 hover:bg-red-50 transition-colors"
+                            className="w-8 h-8 rounded-full clay-circle-btn flex items-center justify-center text-brand-stone hover:text-red-500 hover:bg-red-50 transition-colors"
                             title="Delete creation"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

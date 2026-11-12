@@ -1,71 +1,139 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { Product } from "@/types";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import type { Product } from "@/types";
+import { useAuth } from "@/context/AuthContext";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { type DbRow, mapProduct } from "@/lib/supabase/mappers";
 
 interface WishlistContextType {
-  wishlistIds: string[];
   wishlistProducts: Product[];
-  toggleWishlist: (product: Product) => void;
-  isInWishlist: (productId: string) => boolean;
   wishlistCount: number;
+  isInWishlist: (productId: string) => boolean;
+  toggleWishlist: (product: Product) => void;
+  clearWishlist: () => void;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
-
 const WISHLIST_STORAGE_KEY = "mitti_muse_wishlist_v1";
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
-      if (stored) {
-        setWishlistProducts(JSON.parse(stored));
+      const raw = localStorage.getItem(WISHLIST_STORAGE_KEY);
+      if (raw) {
+        setWishlistProducts(JSON.parse(raw));
       }
-    } catch (err) {
-      console.error("Failed to load wishlist:", err);
+    } catch {
+      // Ignore storage errors
     } finally {
-      setIsLoaded(true);
+      setHydrated(true);
     }
   }, []);
 
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!hydrated) return;
     try {
       localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlistProducts));
-    } catch (err) {
-      console.error("Failed to save wishlist:", err);
+    } catch {
+      // Ignore storage errors
     }
-  }, [wishlistProducts, isLoaded]);
+  }, [wishlistProducts, hydrated]);
 
-  const toggleWishlist = (product: Product) => {
-    setWishlistProducts((prev) => {
-      const exists = prev.some((p) => p.id === product.id);
-      if (exists) {
-        return prev.filter((p) => p.id !== product.id);
+  // Sync wishlist with Supabase wishlist_items for signed-in users
+  useEffect(() => {
+    if (!hydrated || !isSupabaseConfigured() || !user?.id) return;
+
+    let cancelled = false;
+    (async () => {
+      const supabase = createClient();
+
+      // Push local items if not already persisted
+      for (const prod of wishlistProducts) {
+        await supabase
+          .from("wishlist_items")
+          .upsert({ user_id: user.id, product_id: prod.id }, { onConflict: "user_id,product_id" });
       }
-      return [...prev, product];
-    });
-  };
 
-  const isInWishlist = (productId: string) => {
-    return wishlistProducts.some((p) => p.id === productId);
-  };
+      const { data, error } = await supabase
+        .from("wishlist_items")
+        .select(`
+          product_id,
+          products (
+            *,
+            stores (*),
+            categories (*),
+            product_images (*),
+            product_variants (*)
+          )
+        `)
+        .eq("user_id", user.id);
 
-  const wishlistIds = wishlistProducts.map((p) => p.id);
-  const wishlistCount = wishlistProducts.length;
+      if (!cancelled && !error && data) {
+        const products = (data as DbRow[])
+          .filter((row) => Boolean(row.products && typeof row.products === "object"))
+          .map((row) => mapProduct(row.products as DbRow));
+        setWishlistProducts(products);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, hydrated]);
+
+  const isInWishlist = useCallback(
+    (productId: string) => wishlistProducts.some((p) => p.id === productId),
+    [wishlistProducts]
+  );
+
+  const toggleWishlist = useCallback(
+    (product: Product) => {
+      const currentlyIn = wishlistProducts.some((p) => p.id === product.id);
+      setWishlistProducts((prev) =>
+        currentlyIn ? prev.filter((p) => p.id !== product.id) : [...prev, product]
+      );
+
+      if (isSupabaseConfigured() && user?.id) {
+        const supabase = createClient();
+        if (currentlyIn) {
+          void supabase
+            .from("wishlist_items")
+            .delete()
+            .eq("user_id", user.id)
+            .eq("product_id", product.id);
+        } else {
+          void supabase
+            .from("wishlist_items")
+            .upsert({ user_id: user.id, product_id: product.id }, { onConflict: "user_id,product_id" });
+        }
+      }
+    },
+    [wishlistProducts, user?.id]
+  );
+
+  const clearWishlist = useCallback(() => {
+    setWishlistProducts([]);
+    if (isSupabaseConfigured() && user?.id) {
+      const supabase = createClient();
+      void supabase.from("wishlist_items").delete().eq("user_id", user.id);
+    }
+  }, [user?.id]);
 
   return (
     <WishlistContext.Provider
       value={{
-        wishlistIds,
         wishlistProducts,
-        toggleWishlist,
+        wishlistCount: wishlistProducts.length,
         isInWishlist,
-        wishlistCount,
+        toggleWishlist,
+        clearWishlist,
       }}
     >
       {children}
@@ -74,9 +142,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useWishlist() {
-  const context = useContext(WishlistContext);
-  if (!context) {
+  const ctx = useContext(WishlistContext);
+  if (!ctx) {
     throw new Error("useWishlist must be used within a WishlistProvider");
   }
-  return context;
+  return ctx;
 }

@@ -1,63 +1,76 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { getCurrentUser } from "@/lib/auth";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
 
-export async function POST(req: Request) {
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+export async function POST(req: NextRequest) {
   try {
     const user = await getCurrentUser();
-    if (!user || (user.role !== "OWNER" && user.role !== "SELLER")) {
-      return NextResponse.json(
-        { error: "Unauthorized. Business owner account required." },
-        { status: 403 }
-      );
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
+    const requestedBucket = String(formData.get("bucket") || "product-images");
+    const bucket = requestedBucket === "store-assets" ? "store-assets" : "product-images";
 
     if (!file) {
-      return NextResponse.json({ error: "No image file provided" }, { status: 400 });
+      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-    if (!validTypes.includes(file.type)) {
+    if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { error: "Invalid file format. Please upload JPG, PNG, or WEBP." },
+        { error: "Invalid image format. Allowed: JPG, PNG, WebP, GIF" },
         { status: 400 }
       );
     }
 
-    // 10MB limit
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: "Image file is too large. Maximum size is 10MB." },
-        { status: 400 }
-      );
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json({ error: "File size exceeds 10MB limit" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadsDir, { recursive: true });
+    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const safeExt = ext.replace(/[^a-z0-9]/g, "") || "jpg";
+    const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${safeExt}`;
 
-    const ext = path.extname(file.name) || ".jpg";
-    const cleanExt = ext.startsWith(".") ? ext : `.${ext}`;
-    const filename = `product-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}${cleanExt}`;
-    const filePath = path.join(uploadsDir, filename);
+    if (isSupabaseConfigured()) {
+      const supabase = await createClient();
+      const storagePath = `${user.id}/${filename}`;
 
-    await writeFile(filePath, buffer);
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(storagePath, buffer, {
+          contentType: file.type,
+          upsert: false,
+        });
 
-    return NextResponse.json({
-      success: true,
-      url: `/uploads/${filename}`,
-    });
+      if (uploadError) {
+        console.error("Supabase Storage upload error:", uploadError);
+        return NextResponse.json({ error: uploadError.message || "Storage upload failed" }, { status: 400 });
+      }
+
+      const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(storagePath);
+      return NextResponse.json({ url: publicUrlData.publicUrl, storagePath, bucket });
+    }
+
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    await mkdir(uploadDir, { recursive: true });
+
+    const filepath = path.join(uploadDir, filename);
+    await writeFile(filepath, buffer);
+
+    return NextResponse.json({ url: `/uploads/${filename}` });
   } catch (error) {
-    console.error("Upload handler error:", error);
-    return NextResponse.json(
-      { error: "Failed to upload image. Please try again." },
-      { status: 500 }
-    );
+    console.error("Upload error:", error);
+    return NextResponse.json({ error: "File upload failed" }, { status: 500 });
   }
 }

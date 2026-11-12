@@ -36,37 +36,39 @@ export default function OwnerLoginPage() {
       <div className="max-w-md w-full space-y-6">
         {/* Brand & Heading */}
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2 mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-brand-terracotta flex items-center justify-center text-white shadow-soft">
+          <Link href="/" className="inline-flex items-center gap-2.5 mb-2">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand-terracotta to-brand-rust flex items-center justify-center text-white shadow-clay-card border-t border-l border-white/60">
               <span className="font-serif text-xl font-bold italic">M</span>
             </div>
-            <span className="font-serif text-2xl font-bold text-brand-charcoal">
+            <span className="font-serif text-2xl font-bold text-brand-charcoal tracking-tight">
               Mitti &amp; Muse
             </span>
           </Link>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-clay/40 text-brand-terracotta-dark">
-            <Store className="w-3.5 h-3.5 text-brand-terracotta" />
-            <span>Studio &amp; Business Owner Portal</span>
+          <div>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-brand-butter text-brand-charcoal shadow-xs">
+              <Store className="w-3.5 h-3.5 text-amber-800" />
+              <span>Studio &amp; Business Owner Portal</span>
+            </span>
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-charcoal">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-brand-charcoal tracking-tight">
             Welcome to Your Atelier
           </h1>
-          <p className="text-xs text-brand-stone max-w-sm mx-auto">
+          <p className="text-xs text-brand-stone max-w-sm mx-auto leading-relaxed">
             Log in to manage your storefront, publish genuine handcrafted products, view orders, and track your business.
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-card space-y-5">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
           {error && (
-            <div className="p-3 rounded-xl bg-red-50 text-red-700 text-xs border border-red-200">
+            <div className="p-3 rounded-2xl bg-red-50 text-red-700 text-xs border border-red-200 font-medium">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Owner Email Address
               </label>
               <div className="relative">
@@ -76,16 +78,24 @@ export default function OwnerLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="artisan@studio.com"
-                  className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                  className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                 />
                 <Mail className="w-4 h-4 text-brand-stone absolute left-3 top-1/2 -translate-y-1/2" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-bold text-brand-charcoal">
+                  Password
+                </label>
+                <Link
+                  href="/auth/reset-password"
+                  className="text-xs font-medium text-brand-sage hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <input
                   type="password"
@@ -93,7 +103,7 @@ export default function OwnerLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                  className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                 />
                 <Lock className="w-4 h-4 text-brand-stone absolute left-3 top-1/2 -translate-y-1/2" />
               </div>
@@ -102,7 +112,7 @@ export default function OwnerLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary py-3 text-xs shadow-clay flex items-center justify-center gap-2 font-bold"
+              className="w-full clay-pill-btn py-3 text-xs text-white flex items-center justify-center gap-2 font-bold tracking-wide"
             >
               {loading ? (
                 <span>Verifying Access...</span>
@@ -115,7 +125,7 @@ export default function OwnerLoginPage() {
             </button>
           </form>
 
-          <div className="pt-4 border-t border-brand-clay/50 flex flex-col items-center gap-3 text-xs text-brand-stone">
+          <div className="pt-4 border-t border-brand-clay/30 flex flex-col items-center gap-3 text-xs text-brand-stone">
             <p>
               Looking to sell on Mitti &amp; Muse?{" "}
               <Link
@@ -127,11 +137,11 @@ export default function OwnerLoginPage() {
               </Link>
             </p>
 
-            <div className="w-full pt-3 border-t border-brand-clay/40 text-center">
-              <span className="text-[11px] text-brand-stone">Looking to shop or track customer orders?</span>
+            <div className="w-full pt-3 border-t border-brand-clay/30 text-center">
+              <span className="text-[11px] text-brand-stone block mb-1">Looking to shop or track customer orders?</span>
               <Link
                 href="/auth/customer/login"
-                className="block font-semibold text-brand-charcoal hover:text-brand-terracotta mt-0.5 flex items-center justify-center gap-1"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full clay-pill text-xs font-bold text-brand-charcoal hover:shadow-clay-card transition-all"
               >
                 <ShoppingBag className="w-3.5 h-3.5 text-brand-sage" />
                 <span>Customer Sign In &rarr;</span>

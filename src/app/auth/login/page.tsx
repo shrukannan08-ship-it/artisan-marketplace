@@ -31,14 +31,14 @@ export default function LoginPage() {
           {/* Customer Portal */}
           <Link
             href="/auth/customer/login"
-            className="group relative bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-7 shadow-card hover:border-brand-sage hover:shadow-card-hover transition-all flex flex-col justify-between"
+            className="group relative clay-card rounded-[32px] p-6 sm:p-7 bg-white hover:shadow-clay-card transition-all flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand-sage-light flex items-center justify-center text-brand-sage-dark group-hover:scale-105 transition-transform">
-                <Heart className="w-6 h-6 text-brand-sage" />
+              <div className="w-14 h-14 rounded-2xl bg-brand-mint text-emerald-900 flex items-center justify-center shadow-clay-card border-t border-l border-white/80 group-hover:scale-105 transition-transform">
+                <Heart className="w-6 h-6 fill-emerald-800" />
               </div>
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brand-sage">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">
                   For Shoppers &amp; Patrons
                 </span>
                 <h2 className="font-serif text-xl font-bold text-brand-charcoal mt-1">
@@ -50,7 +50,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="pt-6 flex items-center justify-between font-bold text-xs text-brand-sage-dark group-hover:text-brand-sage transition-colors">
+            <div className="pt-6 flex items-center justify-between font-bold text-xs text-emerald-900 group-hover:text-emerald-700 transition-colors">
               <span>Sign In as Customer</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
@@ -59,10 +59,10 @@ export default function LoginPage() {
           {/* Owner Portal */}
           <Link
             href="/auth/owner/login"
-            className="group relative bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-7 shadow-card hover:border-brand-terracotta hover:shadow-card-hover transition-all flex flex-col justify-between"
+            className="group relative clay-card rounded-[32px] p-6 sm:p-7 bg-white hover:shadow-clay-card transition-all flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand-terracotta/10 flex items-center justify-center text-brand-terracotta group-hover:scale-105 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-brand-peach/60 text-brand-terracotta flex items-center justify-center shadow-clay-card border-t border-l border-white/80 group-hover:scale-105 transition-transform">
                 <Store className="w-6 h-6 text-brand-terracotta" />
               </div>
               <div>

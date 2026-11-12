@@ -146,31 +146,35 @@ export default function SellerOrdersPage() {
 
       {/* Filter Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-        {["ALL", "PENDING", "PROCESSING", "SHIPPED", "DELIVERED"].map((st) => (
-          <button
-            key={st}
-            onClick={() => setSelectedFilter(st)}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
-              selectedFilter === st
-                ? "bg-brand-terracotta text-white shadow-xs"
-                : "bg-white border border-brand-clay text-brand-stone hover:text-brand-charcoal"
-            }`}
-          >
-            {st} ({st === "ALL" ? orderItems.length : orderItems.filter((i) => i.fulfillmentStatus === st).length})
-          </button>
-        ))}
+        {["ALL", "PENDING", "PROCESSING", "SHIPPED", "DELIVERED"].map((st) => {
+          const count = st === "ALL" ? orderItems.length : orderItems.filter((i) => i.fulfillmentStatus === st).length;
+          const isActive = selectedFilter === st;
+          return (
+            <button
+              key={st}
+              onClick={() => setSelectedFilter(st)}
+              className={`px-4 py-2 rounded-full text-xs font-bold shrink-0 transition-all ${
+                isActive
+                  ? "clay-pill-btn text-white"
+                  : "clay-pill text-brand-stone hover:text-brand-charcoal hover:shadow-clay-card"
+              }`}
+            >
+              {st} ({count})
+            </button>
+          );
+        })}
       </div>
 
       {/* Orders List */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-12 text-center space-y-4 shadow-soft">
-          <div className="w-16 h-16 rounded-full bg-brand-sand flex items-center justify-center mx-auto text-brand-stone">
+        <div className="clay-card rounded-[32px] p-12 text-center space-y-4 bg-white">
+          <div className="w-16 h-16 rounded-[22px] bg-brand-peach/60 flex items-center justify-center mx-auto text-brand-terracotta shadow-clay-card border-t border-l border-white/80">
             <ShoppingBag className="w-8 h-8" />
           </div>
           <h3 className="font-serif text-xl font-bold text-brand-charcoal">
             No orders in this status
           </h3>
-          <p className="text-xs text-brand-stone max-w-sm mx-auto">
+          <p className="text-xs text-brand-stone max-w-sm mx-auto leading-relaxed">
             All caught up! New orders placed by patrons will appear here automatically.
           </p>
         </div>
@@ -192,9 +196,9 @@ export default function SellerOrdersPage() {
             return (
               <div
                 key={item.id}
-                className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft space-y-4 hover:border-brand-stone/40 transition-colors"
+                className="clay-card rounded-[28px] p-6 space-y-4 bg-white"
               >
-                <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-brand-clay/40 text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-brand-clay/30 text-xs">
                   <div className="flex items-center gap-3">
                     <span className="font-serif font-bold text-base text-brand-charcoal">
                       {item.order.orderNumber}
@@ -206,12 +210,12 @@ export default function SellerOrdersPage() {
 
                   <div className="flex items-center gap-3">
                     <span
-                      className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                      className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs ${
                         item.fulfillmentStatus === "SHIPPED"
-                          ? "bg-blue-50 text-blue-700 border-blue-200"
+                          ? "bg-brand-sky text-sky-900"
                           : item.fulfillmentStatus === "DELIVERED"
-                          ? "bg-brand-sage-light text-brand-sage-dark border-brand-sage/20"
-                          : "bg-amber-50 text-amber-700 border-amber-200"
+                          ? "bg-brand-mint text-emerald-900"
+                          : "bg-brand-butter text-amber-900"
                       }`}
                     >
                       {item.fulfillmentStatus}
@@ -219,7 +223,7 @@ export default function SellerOrdersPage() {
 
                     <button
                       onClick={() => handleOpenModal(item)}
-                      className="px-3.5 py-1.5 rounded-full bg-brand-cream border border-brand-clay text-xs font-semibold text-brand-charcoal hover:bg-brand-sand transition-colors"
+                      className="px-4 py-1.5 rounded-full clay-pill text-xs font-bold text-brand-charcoal hover:shadow-clay-card transition-all"
                     >
                       Update Status
                     </button>
@@ -287,28 +291,28 @@ export default function SellerOrdersPage() {
             className="fixed inset-0 bg-brand-charcoal/50 backdrop-blur-xs"
           />
 
-          <div className="relative bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-elevated border border-brand-clay z-10 space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-brand-clay/40">
+          <div className="relative clay-card rounded-[32px] max-w-md w-full p-6 sm:p-8 bg-white z-10 space-y-5 shadow-elevated">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-clay/30">
               <h3 className="font-serif text-lg font-bold text-brand-charcoal">
                 Update Fulfillment
               </h3>
               <button
                 onClick={() => setSelectedItem(null)}
-                className="p-1.5 rounded-full hover:bg-brand-sand text-brand-stone"
+                className="w-8 h-8 rounded-full clay-circle-btn flex items-center justify-center text-brand-stone hover:text-brand-charcoal"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleUpdateFulfillment} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                <label className="block text-xs font-semibold text-brand-charcoal mb-1.5">
                   Status Transition
                 </label>
                 <select
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+                  className="w-full px-4 py-2.5 text-xs clay-input rounded-2xl"
                 >
                   <option value="PENDING">PENDING (Awaiting Crafting)</option>
                   <option value="PROCESSING">PROCESSING (Packaging Parcel)</option>
@@ -319,13 +323,13 @@ export default function SellerOrdersPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                <label className="block text-xs font-semibold text-brand-charcoal mb-1.5">
                   Shipping Courier
                 </label>
                 <select
                   value={shippingCourier}
                   onChange={(e) => setShippingCourier(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+                  className="w-full px-4 py-2.5 text-xs clay-input rounded-2xl"
                 >
                   <option value="USPS Priority Mail">USPS Priority Mail</option>
                   <option value="FedEx Express">FedEx Express</option>
@@ -336,7 +340,7 @@ export default function SellerOrdersPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                <label className="block text-xs font-semibold text-brand-charcoal mb-1.5">
                   Tracking Number
                 </label>
                 <input
@@ -344,7 +348,7 @@ export default function SellerOrdersPage() {
                   value={trackingNumber}
                   onChange={(e) => setTrackingNumber(e.target.value)}
                   placeholder="e.g. 9400 1000 0000 0000 0000"
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none font-mono"
+                  className="w-full px-4 py-2.5 text-xs clay-input rounded-2xl font-mono"
                 />
               </div>
 
@@ -352,14 +356,14 @@ export default function SellerOrdersPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedItem(null)}
-                  className="px-5 py-2 rounded-full border border-brand-clay text-xs font-semibold text-brand-stone hover:bg-brand-sand"
+                  className="px-5 py-2.5 rounded-full clay-pill text-xs font-semibold text-brand-stone hover:text-brand-charcoal hover:shadow-clay-card transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={updating}
-                  className="btn-primary text-xs px-6 py-2.5 flex items-center gap-1.5"
+                  className="clay-pill-btn text-xs px-6 py-2.5 flex items-center gap-1.5"
                 >
                   {updating ? (
                     <span>Saving...</span>

@@ -12,43 +12,14 @@ import {
   CheckCircle2,
   Store,
 } from "lucide-react";
-import prisma from "@/lib/prisma";
+import { getHomePageData } from "@/lib/marketplace-queries";
 import ProductCard from "@/components/ui/ProductCard";
 
 export const revalidate = 60; // revalidate every minute
 
 export default async function HomePage() {
-  // Fetch featured products, categories, stores, reviews
-  const [categories, featuredProducts, stores, reviews] = await Promise.all([
-    prisma.category.findMany({
-      where: { featured: true },
-      take: 8,
-    }),
-    prisma.product.findMany({
-      where: { status: "ACTIVE", featured: true },
-      take: 8,
-      include: {
-        category: true,
-        store: true,
-        images: { orderBy: { order: "asc" } },
-        variants: true,
-      },
-    }),
-    prisma.store.findMany({
-      where: { featured: true },
-      take: 4,
-      include: {
-        products: {
-          take: 3,
-          include: { images: true },
-        },
-      },
-    }),
-    prisma.review.findMany({
-      take: 3,
-      orderBy: { createdAt: "desc" },
-    }),
-  ]);
+  const { categories, featuredProducts, featuredStores: stores, reviews } =
+    await getHomePageData();
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 overflow-hidden">
@@ -126,9 +97,13 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Hero Visual Collage */}
+            {/* Hero Visual Collage with Reference-Inspired Tactile Plates */}
             <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-sm sm:max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-elevated border-4 border-white">
+              {/* Backing Pastel Plates echoing the attached reference */}
+              <div className="absolute -top-6 -right-6 w-36 h-36 rounded-3xl bg-brand-butter/70 shadow-clay-pill rotate-6 pointer-events-none" />
+              <div className="absolute -bottom-8 -right-4 w-40 h-28 rounded-3xl bg-brand-mint/60 shadow-clay-pill -rotate-3 pointer-events-none" />
+
+              <div className="relative mx-auto max-w-sm sm:max-w-md aspect-[4/5] rounded-[32px] overflow-hidden shadow-clay-card border-4 border-white/95">
                 <Image
                   src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1000&q=80"
                   alt="Artisan ceramic mug and morning sunshine"
@@ -136,28 +111,28 @@ export default async function HomePage() {
                   priority
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/60 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-white">
-                  <span className="text-[11px] uppercase tracking-wider font-semibold text-brand-sand">
-                    Maker Spotlight
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-charcoal/70 via-brand-charcoal/20 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md border border-white/30 text-white">
+                    🌿 Maker Spotlight
                   </span>
-                  <h3 className="font-serif text-xl font-bold mt-1">
+                  <h3 className="font-serif text-xl font-bold">
                     Meera Patel • Mitti Ceramics
                   </h3>
-                  <p className="text-xs text-stone-200 mt-1 line-clamp-2">
+                  <p className="text-xs text-stone-200 line-clamp-2 leading-relaxed">
                     Hand-thrown stoneware celebrating slow mornings and earthy textures.
                   </p>
                 </div>
               </div>
 
-              {/* Floating Pill Card (Reference 1 & 4 style) */}
-              <div className="absolute -bottom-6 -left-6 sm:-bottom-8 sm:-left-8 bg-white rounded-2xl p-4 shadow-elevated border border-brand-clay flex items-center gap-3 backdrop-blur-md">
-                <div className="w-12 h-12 rounded-xl bg-brand-blush flex items-center justify-center text-brand-terracotta font-bold text-lg font-serif">
+              {/* Floating Pill Card with Tactile Relief (Reference style) */}
+              <div className="absolute -bottom-6 -left-4 sm:-bottom-8 sm:-left-8 clay-card p-3.5 sm:p-4 flex items-center gap-3 backdrop-blur-md">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-b from-brand-peach/40 to-brand-peach/20 border-t border-white border-b border-brand-peach/40 flex items-center justify-center text-brand-terracotta font-bold text-lg shadow-clay-circle">
                   ✨
                 </div>
                 <div>
                   <p className="text-xs font-bold text-brand-charcoal">Direct to Creator</p>
-                  <p className="text-[11px] text-brand-stone">90%+ proceeds go to the maker</p>
+                  <p className="text-[11px] text-brand-stone font-medium">90%+ proceeds go to independent makers</p>
                 </div>
               </div>
             </div>
@@ -165,7 +140,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 2. CIRCULAR CATEGORY BROWSER (Reference 2 style) */}
+      {/* 2. CIRCULAR CATEGORY BROWSER (Reference style) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
@@ -186,27 +161,44 @@ export default async function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-5">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/marketplace?category=${cat.slug}`}
-              className="group flex flex-col items-center text-center p-3 rounded-2xl hover:bg-white/80 transition-colors"
-            >
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-brand-sand border-2 border-brand-clay group-hover:border-brand-terracotta group-hover:scale-105 shadow-subtle transition-all duration-300">
-                {cat.imageUrl && (
-                  <Image
-                    src={cat.imageUrl}
-                    alt={cat.name}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                )}
-              </div>
-              <span className="text-xs font-semibold text-brand-charcoal mt-3 group-hover:text-brand-terracotta transition-colors line-clamp-1">
-                {cat.name}
-              </span>
-            </Link>
-          ))}
+          {categories.map((cat, idx) => {
+            const pastelBgs = [
+              "bg-brand-peach/25 border-brand-peach/60 group-hover:bg-brand-peach/40",
+              "bg-brand-butter/40 border-brand-butter/80 group-hover:bg-brand-butter/60",
+              "bg-brand-mint/35 border-brand-mint/70 group-hover:bg-brand-mint/55",
+              "bg-brand-sky/35 border-brand-sky/70 group-hover:bg-brand-sky/55",
+              "bg-brand-lilac/40 border-brand-lilac/80 group-hover:bg-brand-lilac/60",
+              "bg-brand-peach/20 border-brand-peach/50 group-hover:bg-brand-peach/35",
+              "bg-brand-mint/25 border-brand-mint/50 group-hover:bg-brand-mint/45",
+            ];
+            const pastelClass = pastelBgs[idx % pastelBgs.length];
+
+            return (
+              <Link
+                key={cat.id}
+                href={`/marketplace?category=${cat.slug}`}
+                className="group flex flex-col items-center text-center p-3 rounded-3xl hover:bg-white/80 transition-all duration-300"
+              >
+                <div
+                  className={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 shadow-clay-circle group-hover:scale-105 transition-all duration-300 p-1 ${pastelClass}`}
+                >
+                  <div className="w-full h-full rounded-full overflow-hidden relative">
+                    {cat.imageUrl && (
+                      <Image
+                        src={cat.imageUrl}
+                        alt={cat.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    )}
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-brand-charcoal mt-3 group-hover:text-brand-terracotta transition-colors line-clamp-1">
+                  {cat.name}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

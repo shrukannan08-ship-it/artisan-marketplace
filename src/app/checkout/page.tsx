@@ -81,7 +81,8 @@ export default function CheckoutPage() {
 
       // Success! Clear basket and navigate to receipt
       clearCart();
-      router.push(`/order-confirmation/${data.order.id}`);
+      const tokenQuery = data.order?.receiptToken ? `?token=${encodeURIComponent(data.order.receiptToken)}` : "";
+      router.push(`/order-confirmation/${data.order.id}${tokenQuery}`);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -133,31 +134,31 @@ export default function CheckoutPage() {
       </div>
 
       {/* Development Mode Notice (Required by prompt) */}
-      <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">
+      <div className="p-4 rounded-2xl clay-card bg-brand-butter/30 text-xs text-brand-charcoal space-y-1">
         <div className="flex items-center gap-2 font-bold">
           <AlertCircle className="w-4 h-4 text-amber-700" />
           <span>Test Payment Environment Active</span>
         </div>
-        <p className="text-amber-800 leading-relaxed">
+        <p className="text-brand-stone leading-relaxed">
           This checkout environment is operating in functional development mode. Orders create genuine persistent database records and validate server-side stock levels without charging a live credit card. Live Stripe/Razorpay webhooks can be enabled anytime via environment variables.
         </p>
       </div>
 
       {error && (
-        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2 font-medium">
           <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Checkout Form & Summary Grid */}
-      <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
         {/* Left: Shipping & Payment Details */}
         <div className="lg:col-span-7 space-y-6">
           {/* 1. Contact & Shipping Address Card */}
-          <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-6">
-            <div className="flex items-center gap-2 pb-3 border-b border-brand-clay/40">
-              <div className="w-6 h-6 rounded-full bg-brand-terracotta text-white flex items-center justify-center text-xs font-bold">
+          <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-6 bg-white">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-brand-clay/30">
+              <div className="w-7 h-7 rounded-full clay-circle-btn bg-brand-terracotta text-white flex items-center justify-center text-xs font-bold">
                 1
               </div>
               <h2 className="font-serif text-lg font-bold text-brand-charcoal">
@@ -168,7 +169,7 @@ export default function CheckoutPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                  <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                     Recipient Full Name *
                   </label>
                   <input
@@ -176,12 +177,12 @@ export default function CheckoutPage() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                  <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                     Email Address (for order updates) *
                   </label>
                   <input
@@ -189,13 +190,13 @@ export default function CheckoutPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                   Street Address *
                 </label>
                 <input
@@ -204,25 +205,25 @@ export default function CheckoutPage() {
                   value={street}
                   onChange={(e) => setStreet(e.target.value)}
                   placeholder="Street address or P.O. box"
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                  <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                     Apartment / Suite
                   </label>
                   <input
                     type="text"
                     value={apartment}
                     onChange={(e) => setApartment(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                  <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                     City *
                   </label>
                   <input
@@ -230,12 +231,12 @@ export default function CheckoutPage() {
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                  <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                     State / Region *
                   </label>
                   <input
@@ -243,14 +244,14 @@ export default function CheckoutPage() {
                     required
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                  <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                     Postal / ZIP Code *
                   </label>
                   <input
@@ -258,19 +259,19 @@ export default function CheckoutPage() {
                     required
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+                  <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                     Phone Number
                   </label>
                   <input
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
                   />
                 </div>
               </div>
@@ -278,9 +279,9 @@ export default function CheckoutPage() {
           </div>
 
           {/* 2. Payment Method Card */}
-          <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-6">
-            <div className="flex items-center gap-2 pb-3 border-b border-brand-clay/40">
-              <div className="w-6 h-6 rounded-full bg-brand-terracotta text-white flex items-center justify-center text-xs font-bold">
+          <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-6 bg-white">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-brand-clay/30">
+              <div className="w-7 h-7 rounded-full clay-circle-btn bg-brand-terracotta text-white flex items-center justify-center text-xs font-bold">
                 2
               </div>
               <h2 className="font-serif text-lg font-bold text-brand-charcoal">
@@ -288,25 +289,25 @@ export default function CheckoutPage() {
               </h2>
             </div>
 
-            <div className="p-4 rounded-2xl bg-brand-cream/60 border border-brand-clay space-y-3">
+            <div className="p-4 rounded-2xl clay-card bg-brand-cream/60 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-2 text-xs font-bold text-brand-charcoal">
                   <CreditCard className="w-4 h-4 text-brand-terracotta" />
                   <span>Instant Test Card (Sandbox)</span>
                 </span>
-                <span className="text-[10px] uppercase font-bold text-brand-sage bg-brand-sage-light px-2.5 py-0.5 rounded-full">
+                <span className="text-[10px] uppercase font-bold text-emerald-800 bg-brand-mint px-2.5 py-0.5 rounded-full shadow-xs">
                   Ready to test
                 </span>
               </div>
               <p className="text-xs text-brand-stone">
-                Card ending in <strong className="text-brand-charcoal">4242</strong> (Simulated Visa). No real funds will be deducted.
+                Card ending in <strong className="text-brand-charcoal font-bold">4242</strong> (Simulated Visa). No real funds will be deducted.
               </p>
             </div>
           </div>
         </div>
 
         {/* Right: Order Summary Sidebar */}
-        <div className="lg:col-span-5 bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-card space-y-6">
+        <div className="lg:col-span-5 clay-card rounded-[32px] p-6 sm:p-8 space-y-6 bg-white">
           <h2 className="font-serif text-xl font-bold text-brand-charcoal">
             Items in Order ({items.length})
           </h2>
@@ -321,7 +322,7 @@ export default function CheckoutPage() {
 
               return (
                 <div key={item.id} className="flex items-center gap-3 py-2 border-b border-brand-clay/30">
-                  <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-brand-sand shrink-0">
+                  <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-brand-sand shrink-0 shadow-xs">
                     <Image
                       src={primaryImage}
                       alt={item.product.title}
@@ -330,11 +331,11 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-brand-charcoal truncate">
+                    <p className="text-xs font-bold text-brand-charcoal truncate">
                       {item.product.title}
                     </p>
                     {item.variant && (
-                      <p className="text-[10px] text-brand-stone">
+                      <p className="text-[10px] text-brand-stone font-medium">
                         {item.variant.name}: {item.variant.option}
                       </p>
                     )}
@@ -348,27 +349,27 @@ export default function CheckoutPage() {
             })}
           </div>
 
-          <div className="space-y-2.5 text-xs text-brand-stone pt-2 border-t border-brand-clay/50">
+          <div className="space-y-2.5 text-xs text-brand-stone pt-2 border-t border-brand-clay/30">
             <div className="flex items-center justify-between">
               <span>Subtotal</span>
-              <span className="font-semibold text-brand-charcoal">
+              <span className="font-bold text-brand-charcoal">
                 {formatCurrency(subtotal)}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span>Shipping</span>
-              <span className="font-semibold text-brand-charcoal">
+              <span className="font-bold text-brand-charcoal">
                 {shippingAmount === 0 ? "FREE" : formatCurrency(shippingAmount)}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span>Estimated Sales Tax</span>
-              <span className="font-semibold text-brand-charcoal">
+              <span className="font-bold text-brand-charcoal">
                 {formatCurrency(estimatedTax)}
               </span>
             </div>
 
-            <div className="pt-3 border-t border-brand-clay/60 flex items-center justify-between text-base font-bold text-brand-charcoal">
+            <div className="pt-3 border-t border-brand-clay/30 flex items-center justify-between text-base font-bold text-brand-charcoal">
               <span>Total to Pay</span>
               <span className="font-serif text-2xl text-brand-terracotta">
                 {formatCurrency(totalAmount)}
@@ -379,7 +380,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn-primary py-4 text-sm shadow-clay flex items-center justify-center gap-2 font-bold tracking-wide"
+            className="w-full clay-pill-btn py-4 text-xs sm:text-sm text-white flex items-center justify-center gap-2 font-bold tracking-wide"
           >
             {loading ? (
               <span>Placing Order...</span>

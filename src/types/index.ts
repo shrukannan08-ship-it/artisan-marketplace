@@ -104,6 +104,7 @@ export interface OrderItem {
   storeId: string;
   store?: Store;
   productId: string;
+  product?: Product;
   variantId?: string | null;
   productTitle: string;
   variantName?: string | null;

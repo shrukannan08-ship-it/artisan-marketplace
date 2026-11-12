@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Sparkles, ArrowRight, Heart, Store } from "lucide-react";
-import prisma from "@/lib/prisma";
+import { getAllStoresWithProducts } from "@/lib/marketplace-queries";
 
 export const metadata = {
   title: "Maker Stories & Craft Journal | Mitti & Muse",
@@ -11,15 +11,7 @@ export const metadata = {
 };
 
 export default async function MakerStoriesPage() {
-  const stores = await prisma.store.findMany({
-    include: {
-      products: {
-        where: { status: "ACTIVE" },
-        take: 2,
-        include: { images: true },
-      },
-    },
-  });
+  const stores = await getAllStoresWithProducts(2);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-12">
@@ -42,7 +34,7 @@ export default async function MakerStoriesPage() {
         {stores.map((store, idx) => (
           <div
             key={store.id}
-            className={`bg-white rounded-3xl sm:rounded-4xl border border-brand-clay/70 p-8 sm:p-12 shadow-card grid grid-cols-1 lg:grid-cols-12 gap-10 items-center ${
+            className={`clay-card rounded-[32px] sm:rounded-[36px] p-8 sm:p-12 bg-white grid grid-cols-1 lg:grid-cols-12 gap-10 items-center ${
               idx % 2 === 1 ? "lg:flex-row-reverse" : ""
             }`}
           >
@@ -62,7 +54,7 @@ export default async function MakerStoriesPage() {
               </p>
 
               {store.craftsmanship && (
-                <div className="p-5 rounded-2xl bg-brand-cream/80 border border-brand-clay/60">
+                <div className="p-5 rounded-2xl bg-brand-cream/80 border border-brand-clay/40 shadow-inner">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-brand-charcoal mb-1">
                     Signature Technique &amp; Ethics
                   </h4>
@@ -75,7 +67,7 @@ export default async function MakerStoriesPage() {
               <div className="pt-2 flex flex-wrap gap-4 items-center">
                 <Link
                   href={`/store/${store.slug}`}
-                  className="btn-primary text-xs px-6 py-3 flex items-center gap-2"
+                  className="clay-pill-btn text-xs px-6 py-3 flex items-center gap-2"
                 >
                   <span>Visit {store.storeName} Storefront</span>
                   <ArrowRight className="w-4 h-4" />
@@ -85,7 +77,7 @@ export default async function MakerStoriesPage() {
 
             {/* Visual Collage */}
             <div className={`space-y-4 ${idx % 2 === 1 ? "lg:col-span-5 lg:order-1" : "lg:col-span-5"}`}>
-              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-soft border border-brand-clay">
+              <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-clay-card border border-brand-clay/30">
                 {store.bannerUrl && (
                   <Image
                     src={store.bannerUrl}
@@ -101,7 +93,7 @@ export default async function MakerStoriesPage() {
                   {store.products.map((p) => (
                     <div
                       key={p.id}
-                      className="relative aspect-square rounded-2xl overflow-hidden bg-brand-sand border border-brand-clay/50 shadow-xs"
+                      className="relative aspect-square rounded-2xl overflow-hidden bg-brand-sand border border-brand-clay/30 shadow-xs"
                     >
                       {p.images[0]?.url && (
                         <Image

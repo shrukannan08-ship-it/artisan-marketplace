@@ -1,6 +1,6 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import prisma from "@/lib/prisma";
+import { getStoreBySlug } from "@/lib/marketplace-queries";
 import StorefrontView from "./StorefrontView";
 
 interface StorePageProps {
@@ -9,9 +9,7 @@ interface StorePageProps {
 
 export async function generateMetadata({ params }: StorePageProps) {
   const { slug } = await params;
-  const store = await prisma.store.findUnique({
-    where: { slug },
-  });
+  const store = await getStoreBySlug(slug);
 
   if (!store) return { title: "Store Not Found" };
 
@@ -24,27 +22,14 @@ export async function generateMetadata({ params }: StorePageProps) {
 export default async function StorePage({ params }: StorePageProps) {
   const { slug } = await params;
 
-  const store = await prisma.store.findUnique({
-    where: { slug },
-    include: {
-      products: {
-        where: { status: "ACTIVE" },
-        include: {
-          category: true,
-          images: { orderBy: { order: "asc" } },
-          variants: true,
-        },
-        orderBy: { createdAt: "desc" },
-      },
-    },
-  });
+  const store = await getStoreBySlug(slug);
 
   if (!store) {
     notFound();
   }
 
   // Format products so they include store info for the ProductCards
-  const productsWithStore = store.products.map((p) => ({
+  const productsWithStore = (store.products ?? []).map((p) => ({
     ...p,
     store,
   }));

@@ -3,33 +3,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CheckCircle2, Package, Truck, ArrowRight, Store } from "lucide-react";
-import prisma from "@/lib/prisma";
+import { getOrderConfirmation } from "@/lib/marketplace-queries";
 import { formatCurrency } from "@/lib/utils";
 
 interface OrderConfirmationPageProps {
   params: Promise<{ orderId: string }>;
+  searchParams: Promise<{ token?: string }>;
 }
 
 export default async function OrderConfirmationPage({
   params,
+  searchParams,
 }: OrderConfirmationPageProps) {
   const { orderId } = await params;
+  const { token } = await searchParams;
 
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: {
-      items: {
-        include: {
-          store: true,
-          product: {
-            include: {
-              images: { where: { isPrimary: true }, take: 1 },
-            },
-          },
-        },
-      },
-    },
-  });
+  const order = await getOrderConfirmation(orderId, token);
 
   if (!order) {
     notFound();
@@ -55,12 +44,12 @@ export default async function OrderConfirmationPage({
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
       {/* Celebration Header */}
-      <div className="bg-white rounded-3xl sm:rounded-4xl border border-brand-clay/70 p-8 sm:p-12 shadow-card text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-brand-sage-light text-brand-sage flex items-center justify-center mx-auto shadow-subtle">
-          <CheckCircle2 className="w-10 h-10" />
+      <div className="clay-card rounded-[32px] sm:rounded-[36px] p-8 sm:p-12 text-center space-y-5 bg-white">
+        <div className="w-16 h-16 rounded-[22px] bg-brand-mint/70 text-emerald-900 flex items-center justify-center mx-auto shadow-clay-card border-t border-l border-white/90">
+          <CheckCircle2 className="w-9 h-9" />
         </div>
 
-        <span className="inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-brand-terracotta/10 text-brand-terracotta uppercase tracking-wider">
+        <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-brand-peach/60 text-brand-terracotta uppercase tracking-wider border-t border-l border-white/80 shadow-xs">
           Order Confirmed
         </span>
 
@@ -73,11 +62,11 @@ export default async function OrderConfirmationPage({
         </p>
 
         <div className="pt-2 flex flex-wrap justify-center gap-4">
-          <Link href="/account/orders" className="btn-primary text-xs px-6 py-3">
+          <Link href="/account/orders" className="clay-pill-btn text-xs px-6 py-3">
             <Package className="w-4 h-4" />
             <span>Track in Your Account</span>
           </Link>
-          <Link href="/marketplace" className="btn-secondary text-xs px-6 py-3">
+          <Link href="/marketplace" className="clay-pill text-xs px-6 py-3 text-brand-charcoal font-bold hover:shadow-clay-card transition-all">
             <span>Continue Browsing</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
@@ -87,8 +76,8 @@ export default async function OrderConfirmationPage({
       {/* Order Details & Items Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         {/* Left: Items list */}
-        <div className="md:col-span-7 bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-6">
-          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-3 border-b border-brand-clay/40">
+        <div className="md:col-span-7 clay-card rounded-[28px] p-6 sm:p-8 space-y-6 bg-white">
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-3 border-b border-brand-clay/30">
             Handcrafted Items ({order.items.length})
           </h2>
 
@@ -98,7 +87,7 @@ export default async function OrderConfirmationPage({
                 key={item.id}
                 className="flex items-center gap-4 py-3 border-b border-brand-clay/30 last:border-0"
               >
-                <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-brand-sand shrink-0">
+                <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-brand-sand shrink-0 shadow-xs">
                   <Image
                     src={
                       item.product?.images?.[0]?.url ||
@@ -121,9 +110,9 @@ export default async function OrderConfirmationPage({
                     <Store className="w-3 h-3" />
                     <span>{item.store.storeName}</span>
                   </p>
-                  <p className="text-[10px] text-brand-sage font-medium mt-1">
+                  <span className="inline-block mt-1 text-[10px] font-semibold text-emerald-800 bg-brand-mint/60 px-2.5 py-0.5 rounded-full">
                     Status: {item.fulfillmentStatus}
-                  </p>
+                  </span>
                 </div>
 
                 <div className="text-right">
@@ -140,7 +129,7 @@ export default async function OrderConfirmationPage({
         {/* Right: Summary & Delivery Address */}
         <div className="md:col-span-5 space-y-6">
           {/* Delivery Address */}
-          <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft space-y-3">
+          <div className="clay-card rounded-[28px] p-6 space-y-3 bg-white">
             <h3 className="font-serif text-base font-bold text-brand-charcoal flex items-center gap-2">
               <Truck className="w-4 h-4 text-brand-terracotta" />
               <span>Shipping Destination</span>
@@ -157,7 +146,7 @@ export default async function OrderConfirmationPage({
           </div>
 
           {/* Pricing Totals */}
-          <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft space-y-3 text-xs text-brand-stone">
+          <div className="clay-card rounded-[28px] p-6 space-y-3 text-xs text-brand-stone bg-white">
             <div className="flex justify-between">
               <span>Subtotal</span>
               <span className="font-semibold text-brand-charcoal">
@@ -176,7 +165,7 @@ export default async function OrderConfirmationPage({
                 {formatCurrency(order.taxAmount)}
               </span>
             </div>
-            <div className="pt-3 border-t border-brand-clay/50 flex justify-between text-base font-bold text-brand-charcoal">
+            <div className="pt-3 border-t border-brand-clay/30 flex justify-between text-base font-bold text-brand-charcoal">
               <span>Total Paid</span>
               <span className="font-serif text-xl text-brand-terracotta">
                 {formatCurrency(order.totalAmount)}

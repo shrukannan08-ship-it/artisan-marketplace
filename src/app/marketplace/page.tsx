@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Sparkles, Store, RefreshCw } from "lucide-react";
-import prisma from "@/lib/prisma";
+import { getMarketplaceData } from "@/lib/marketplace-queries";
 import ProductCard from "@/components/ui/ProductCard";
 import MarketplaceFilterBar from "./MarketplaceFilterBar";
 
@@ -25,71 +25,35 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
   const minPrice = resolvedParams.minPrice;
   const maxPrice = resolvedParams.maxPrice;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const where: any = {
-    status: "ACTIVE",
-  };
-
-  if (q) {
-    where.OR = [
-      { title: { contains: q } },
-      { description: { contains: q } },
-      { tags: { contains: q } },
-    ];
-  }
-
-  if (category) {
-    where.category = { slug: category };
-  }
-
-  if (store) {
-    where.store = { slug: store };
-  }
-
-  if (minPrice || maxPrice) {
-    where.price = {};
-    if (minPrice) where.price.gte = parseInt(minPrice) * 100;
-    if (maxPrice) where.price.lte = parseInt(maxPrice) * 100;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let orderBy: any = { createdAt: "desc" };
-  if (sort === "price-low") {
-    orderBy = { price: "asc" };
-  } else if (sort === "price-high") {
-    orderBy = { price: "desc" };
-  } else if (sort === "newest") {
-    orderBy = { createdAt: "desc" };
-  }
-
-  const [products, categories, stores] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      orderBy,
-      include: {
-        category: true,
-        store: true,
-        images: { orderBy: { order: "asc" } },
-        variants: true,
-      },
-    }),
-    prisma.category.findMany({ orderBy: { name: "asc" } }),
-    prisma.store.findMany({ orderBy: { storeName: "asc" } }),
-  ]);
+  const { products, categories, stores } = await getMarketplaceData({
+    q,
+    category,
+    store,
+    sort,
+    minPrice,
+    maxPrice,
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-brand-blush via-white to-brand-sand rounded-3xl p-6 sm:p-10 border border-brand-clay/70 shadow-soft">
-        <span className="text-xs font-semibold tracking-wider uppercase text-brand-terracotta">
-          Curated Independent Crafts
-        </span>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-brand-charcoal mt-1">
-          Marketplace &amp; Discovery
-        </h1>
-        <p className="text-sm text-brand-stone max-w-xl mt-2">
-          Discover unique small-batch creations made with patience, sustainable ingredients, and artisanal heritage.
-        </p>
+      {/* Header Banner Plate */}
+      <div className="relative clay-card rounded-[32px] p-6 sm:p-10 overflow-hidden bg-gradient-to-br from-white via-brand-bisque/90 to-brand-peach/15">
+        <div className="relative z-10 space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-brand-butter text-brand-charcoal shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+            <span>Curated Independent Crafts</span>
+          </div>
+          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-charcoal tracking-tight">
+            Marketplace &amp; Discovery
+          </h1>
+          <p className="text-xs sm:text-sm text-brand-stone max-w-xl leading-relaxed">
+            Discover unique small-batch creations made with patience, sustainable ingredients, and artisanal heritage by verified independent creators.
+          </p>
+        </div>
+
+        {/* Soft pastel decorative ambient plates */}
+        <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-brand-mint/40 blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-10 right-28 w-36 h-36 rounded-full bg-brand-peach/40 blur-2xl pointer-events-none" />
       </div>
 
       {/* Filter and Search Bar Component */}
@@ -107,9 +71,9 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
 
       {/* Products Grid */}
       {products.length === 0 ? (
-        <div className="text-center py-16 sm:py-20 bg-white rounded-3xl border border-brand-clay/70 p-8 shadow-soft max-w-2xl mx-auto space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-brand-blush flex items-center justify-center mx-auto text-brand-terracotta">
-            <Sparkles className="w-8 h-8" />
+        <div className="text-center py-16 sm:py-20 clay-card rounded-[32px] p-8 sm:p-12 max-w-2xl mx-auto space-y-5">
+          <div className="w-20 h-20 rounded-[28px] bg-brand-peach/60 border border-white/80 shadow-clay-card flex items-center justify-center mx-auto text-brand-terracotta">
+            <Sparkles className="w-9 h-9" />
           </div>
           {q || category || store || minPrice || maxPrice ? (
             <>
@@ -122,17 +86,17 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
               <div className="pt-2">
                 <Link
                   href="/marketplace"
-                  className="btn-outline text-xs px-5 py-2.5 inline-flex items-center gap-1.5"
+                  className="clay-pill px-5 py-2.5 text-xs font-bold text-brand-charcoal hover:shadow-clay-card inline-flex items-center gap-1.5 transition-all"
                 >
-                  <RefreshCw className="w-3.5 h-3.5" />
+                  <RefreshCw className="w-3.5 h-3.5 text-brand-terracotta" />
                   <span>Clear All Filters</span>
                 </Link>
               </div>
             </>
           ) : (
             <>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-terracotta/10 text-brand-terracotta">
-                <Store className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-brand-mint text-brand-charcoal shadow-xs">
+                <Store className="w-3.5 h-3.5 text-emerald-800" />
                 <span>Makers Wanted</span>
               </div>
               <h3 className="font-serif text-2xl sm:text-3xl font-bold text-brand-charcoal">
@@ -144,14 +108,14 @@ export default async function MarketplacePage({ searchParams }: MarketplacePageP
               <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/auth/owner/register"
-                  className="btn-primary text-xs px-6 py-3 shadow-clay flex items-center gap-2"
+                  className="clay-pill-btn text-xs px-6 py-3 text-white flex items-center gap-2"
                 >
                   <Store className="w-4 h-4" />
                   <span>Start Your Store &amp; Publish First Product</span>
                 </Link>
                 <Link
                   href="/auth/owner/login"
-                  className="btn-secondary text-xs px-5 py-3"
+                  className="clay-pill text-xs px-5 py-3 font-bold text-brand-charcoal hover:shadow-clay-card"
                 >
                   <span>Owner Login</span>
                 </Link>

@@ -30,10 +30,10 @@ export default function ProductCard({
     "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=600&q=80";
 
   const badgeColorClasses = {
-    terracotta: "bg-brand-terracotta/15 text-brand-terracotta border-brand-terracotta/30",
-    sage: "bg-brand-sage/15 text-brand-sage-dark border-brand-sage/30",
-    gold: "bg-brand-gold/15 text-brand-charcoal border-brand-gold/30",
-    rose: "bg-brand-rose/20 text-brand-charcoal border-brand-rose/40",
+    terracotta: "bg-brand-peach/30 text-[#A84832] border-brand-peach/60 shadow-xs",
+    sage: "bg-brand-mint/40 text-[#285844] border-brand-mint/70 shadow-xs",
+    gold: "bg-brand-butter/50 text-[#7D5A16] border-brand-butter/80 shadow-xs",
+    rose: "bg-brand-lilac/45 text-[#4A386D] border-brand-lilac/70 shadow-xs",
   }[badgeColor];
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -49,10 +49,10 @@ export default function ProductCard({
   };
 
   return (
-    <div className="group relative bg-white rounded-3xl border border-brand-clay/70 p-3.5 shadow-soft hover:shadow-card hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+    <div className="group relative clay-card hover:clay-card-hover p-4 flex flex-col justify-between">
       <div>
         {/* Image Container with Badges */}
-        <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-brand-sand/50 mb-3.5">
+        <div className="relative aspect-square w-full rounded-[22px] overflow-hidden bg-brand-sand/50 mb-3.5 border border-brand-clay/50 shadow-inner-soft">
           <Link href={`/product/${product.slug}`} className="block w-full h-full relative">
             <Image
               src={primaryImage}
@@ -67,7 +67,7 @@ export default function ProductCard({
           {badge && (
             <div className="absolute top-2.5 left-2.5 z-10">
               <span
-                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider border backdrop-blur-xs shadow-xs ${badgeColorClasses}`}
+                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border backdrop-blur-xs shadow-clay-pill ${badgeColorClasses}`}
               >
                 <Sparkles className="w-2.5 h-2.5" />
                 <span>{badge}</span>
@@ -78,22 +78,22 @@ export default function ProductCard({
           {/* Wishlist Button */}
           <button
             onClick={handleWishlistToggle}
-            className={`absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-xs transition-all shadow-subtle ${
+            className={`absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-xs transition-all shadow-clay-circle ${
               isFavorite
                 ? "bg-white text-red-500 shadow-md"
-                : "bg-white/80 text-brand-charcoal hover:bg-white hover:text-red-500"
+                : "bg-white/90 text-brand-charcoal hover:bg-white hover:text-red-500"
             }`}
             title={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
           >
             <Heart
-              className={`w-4 h-4 transition-transform ${isFavorite ? "fill-red-500 scale-110" : ""}`}
+              className={`w-3.5 h-3.5 transition-transform ${isFavorite ? "fill-red-500 scale-110" : ""}`}
             />
           </button>
 
           {/* Stock Alert Pill if low */}
           {product.stock <= product.lowStockThreshold && product.stock > 0 && (
-            <div className="absolute bottom-2 left-2.5">
-              <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-amber-500/90 text-white backdrop-blur-xs">
+            <div className="absolute bottom-2.5 left-2.5">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/90 text-white backdrop-blur-xs shadow-xs">
                 Only {product.stock} left
               </span>
             </div>
@@ -107,11 +107,11 @@ export default function ProductCard({
             <div className="flex items-center justify-between text-xs">
               <Link
                 href={`/store/${product.store.slug}`}
-                className="text-[11px] font-medium text-brand-stone hover:text-brand-terracotta truncate transition-colors"
+                className="text-[11px] font-semibold text-brand-stone hover:text-brand-terracotta truncate transition-colors"
               >
                 {product.store.storeName}
               </Link>
-              <div className="flex items-center gap-1 text-[11px] font-medium text-brand-charcoal">
+              <div className="flex items-center gap-1 text-[11px] font-bold text-brand-charcoal">
                 <Star className="w-3 h-3 text-brand-gold fill-brand-gold" />
                 <span>{product.store.rating.toFixed(1)}</span>
               </div>
@@ -125,21 +125,21 @@ export default function ProductCard({
 
           {/* Category Tag */}
           {product.category && (
-            <p className="text-[11px] text-brand-stone/80 line-clamp-1">
+            <p className="text-[11px] text-brand-stone/80 line-clamp-1 font-medium">
               {product.category.name}
             </p>
           )}
         </div>
       </div>
 
-      {/* Price & Action Button (Reference 2 style) */}
-      <div className="mt-3.5 pt-3 border-t border-brand-clay/40 flex items-center justify-between px-1">
+      {/* Price & Action Button */}
+      <div className="mt-3.5 pt-3 border-t border-brand-clay/50 flex items-center justify-between px-1">
         <div className="flex items-baseline gap-1.5">
           <span className="font-serif text-lg font-bold text-brand-charcoal">
             {formatCurrency(product.price)}
           </span>
           {product.compareAtPrice && product.compareAtPrice > product.price && (
-            <span className="text-xs text-brand-stone line-through">
+            <span className="text-xs text-brand-stone line-through font-medium">
               {formatCurrency(product.compareAtPrice)}
             </span>
           )}
@@ -147,7 +147,7 @@ export default function ProductCard({
 
         <button
           onClick={handleAddToCart}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-cream border border-brand-clay text-brand-charcoal text-xs font-semibold hover:bg-brand-terracotta hover:text-white hover:border-brand-terracotta shadow-xs active:scale-95 transition-all"
+          className="clay-pill px-3.5 py-1.5 text-brand-charcoal hover:bg-brand-peach hover:text-white hover:border-brand-peach active:scale-95 transition-all text-xs font-bold"
         >
           <ShoppingBag className="w-3.5 h-3.5" />
           <span>Add</span>

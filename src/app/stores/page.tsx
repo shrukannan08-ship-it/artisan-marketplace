@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, MapPin, Sparkles, ArrowRight, Store as StoreIcon } from "lucide-react";
-import prisma from "@/lib/prisma";
+import { getAllStoresWithProducts } from "@/lib/marketplace-queries";
 
 export const metadata = {
   title: "Independent Artisan Studios & Boutique Brands | Mitti & Muse",
@@ -11,39 +11,28 @@ export const metadata = {
 };
 
 export default async function StoresPage() {
-  const stores = await prisma.store.findMany({
-    include: {
-      products: {
-        where: { status: "ACTIVE" },
-        take: 3,
-        include: {
-          images: { where: { isPrimary: true }, take: 1 },
-        },
-      },
-    },
-    orderBy: { rating: "desc" },
-  });
+  const stores = await getAllStoresWithProducts(3);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
       {/* Header */}
-      <div className="bg-gradient-to-r from-brand-blush via-white to-brand-sand rounded-3xl p-8 sm:p-12 border border-brand-clay/70 shadow-soft">
-        <span className="text-xs font-semibold tracking-wider uppercase text-brand-terracotta flex items-center gap-1.5">
+      <div className="clay-card rounded-[32px] p-8 sm:p-12 bg-gradient-to-r from-brand-peach/40 via-white to-brand-butter/40 space-y-3">
+        <span className="text-xs font-bold tracking-wider uppercase text-brand-terracotta flex items-center gap-1.5">
           <StoreIcon className="w-4 h-4" />
           <span>Curated Maker Studios</span>
         </span>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-brand-charcoal mt-2">
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-brand-charcoal">
           Independent Brands &amp; Artisans
         </h1>
-        <p className="text-sm text-brand-stone max-w-xl mt-2 leading-relaxed">
+        <p className="text-sm text-brand-stone max-w-xl leading-relaxed">
           Every storefront on Mitti &amp; Muse is independently owned and operated by small-batch makers, women entrepreneurs, and creative craftspeople.
         </p>
       </div>
 
       {/* Grid of Stores */}
       {stores.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-12 sm:p-16 text-center space-y-4 shadow-soft max-w-2xl mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-brand-sand flex items-center justify-center mx-auto text-brand-terracotta">
+        <div className="clay-card rounded-[32px] p-12 sm:p-16 text-center space-y-4 bg-white max-w-2xl mx-auto">
+          <div className="w-16 h-16 rounded-[22px] bg-brand-peach/60 flex items-center justify-center mx-auto text-brand-terracotta shadow-clay-card border-t border-l border-white/80">
             <StoreIcon className="w-8 h-8" />
           </div>
           <h3 className="font-serif text-2xl font-bold text-brand-charcoal">
@@ -55,7 +44,7 @@ export default async function StoresPage() {
           <div className="pt-3">
             <Link
               href="/auth/owner/register"
-              className="btn-primary text-xs px-6 py-3 shadow-clay inline-flex items-center gap-2"
+              className="clay-pill-btn text-xs px-6 py-3 inline-flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
               <span>Start Your Store &amp; Brand Profile</span>
@@ -67,7 +56,7 @@ export default async function StoresPage() {
           {stores.map((store) => (
             <div
               key={store.id}
-              className="bg-white rounded-3xl border border-brand-clay/70 overflow-hidden shadow-soft hover:shadow-card transition-all flex flex-col justify-between"
+              className="clay-card rounded-[28px] overflow-hidden flex flex-col justify-between bg-white hover:shadow-clay-card transition-all"
             >
               <div>
                 {/* Banner with Logo Overlay */}
@@ -81,7 +70,7 @@ export default async function StoresPage() {
                     />
                   )}
                   <div className="absolute inset-0 bg-black/20" />
-                  <div className="absolute -bottom-4 left-6 w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-elevated bg-white">
+                  <div className="absolute -bottom-4 left-6 w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-clay-card bg-white">
                     {store.logoUrl ? (
                       <Image
                         src={store.logoUrl}
@@ -131,7 +120,7 @@ export default async function StoresPage() {
                         {store.products.map((prod) => (
                           <div
                             key={prod.id}
-                            className="relative aspect-square rounded-xl overflow-hidden bg-brand-sand border border-brand-clay/60"
+                            className="relative aspect-square rounded-xl overflow-hidden bg-brand-sand border border-brand-clay/40 shadow-xs"
                           >
                             {prod.images[0]?.url && (
                               <Image
@@ -150,13 +139,13 @@ export default async function StoresPage() {
               </div>
 
               {/* Bottom Action */}
-              <div className="p-6 pt-4 border-t border-brand-clay/40 mt-4 flex items-center justify-between">
+              <div className="p-6 pt-4 border-t border-brand-clay/30 mt-4 flex items-center justify-between">
                 <span className="text-xs text-brand-stone font-medium">
                   {store.products.length} listed creations
                 </span>
                 <Link
                   href={`/store/${store.slug}`}
-                  className="btn-primary text-xs px-5 py-2 flex items-center gap-1.5"
+                  className="clay-pill-btn text-xs px-5 py-2.5 flex items-center gap-1.5"
                 >
                   <span>Visit Storefront</span>
                   <ArrowRight className="w-3.5 h-3.5" />

@@ -2,8 +2,8 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Package, Truck, ArrowRight, Store, Clock } from "lucide-react";
-import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { getUserOrders } from "@/lib/marketplace-queries";
 import { formatCurrency } from "@/lib/utils";
 
 export const metadata = {
@@ -16,25 +16,7 @@ export const dynamic = "force-dynamic";
 export default async function CustomerOrdersPage() {
   const user = await getCurrentUser();
 
-  // If user is not logged in, or fetch orders by user or demo customer
-  const orders = user
-    ? await prisma.order.findMany({
-        where: { userId: user.id },
-        include: {
-          items: {
-            include: {
-              store: true,
-              product: {
-                include: {
-                  images: { where: { isPrimary: true }, take: 1 },
-                },
-              },
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
-      })
-    : [];
+  const orders = user ? await getUserOrders(user.id) : [];
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8">
@@ -51,34 +33,34 @@ export default async function CustomerOrdersPage() {
       </div>
 
       {!user ? (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-8 text-center space-y-4 shadow-soft">
-          <div className="w-14 h-14 rounded-full bg-brand-blush flex items-center justify-center mx-auto text-brand-terracotta">
-            <Package className="w-7 h-7" />
+        <div className="clay-card rounded-[32px] p-8 sm:p-12 text-center space-y-4 bg-white max-w-lg mx-auto">
+          <div className="w-16 h-16 rounded-[22px] bg-brand-peach/60 flex items-center justify-center mx-auto text-brand-terracotta shadow-clay-card border-t border-l border-white/80">
+            <Package className="w-8 h-8" />
           </div>
           <h3 className="font-serif text-xl font-bold text-brand-charcoal">
             Sign In to View Your Orders
           </h3>
-          <p className="text-xs text-brand-stone max-w-sm mx-auto">
+          <p className="text-xs text-brand-stone max-w-sm mx-auto leading-relaxed">
             Please log in with your customer account to view your past orders, delivery tracking numbers, and maker receipts.
           </p>
           <div className="flex justify-center gap-3 pt-2">
-            <Link href="/auth/login" className="btn-primary text-xs px-6 py-2.5">
+            <Link href="/auth/login" className="clay-pill-btn text-xs px-6 py-2.5">
               Sign In
             </Link>
           </div>
         </div>
       ) : orders.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-12 text-center space-y-4 shadow-soft">
-          <div className="w-16 h-16 rounded-full bg-brand-sand flex items-center justify-center mx-auto text-brand-stone">
+        <div className="clay-card rounded-[32px] p-12 text-center space-y-4 bg-white max-w-xl mx-auto">
+          <div className="w-16 h-16 rounded-[22px] bg-brand-sand/80 flex items-center justify-center mx-auto text-brand-stone shadow-clay-card border-t border-l border-white/80">
             <Package className="w-8 h-8" />
           </div>
           <h3 className="font-serif text-xl font-bold text-brand-charcoal">
             No Orders Yet
           </h3>
-          <p className="text-xs text-brand-stone max-w-sm mx-auto">
+          <p className="text-xs text-brand-stone max-w-sm mx-auto leading-relaxed">
             You haven&apos;t placed any orders yet. Discover unique handmade ceramics, jewelry, and craft kits today!
           </p>
-          <Link href="/marketplace" className="btn-primary text-xs px-6 py-2.5 inline-block">
+          <Link href="/marketplace" className="clay-pill-btn text-xs px-6 py-2.5 inline-block">
             Explore Marketplace
           </Link>
         </div>
@@ -87,10 +69,10 @@ export default async function CustomerOrdersPage() {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft space-y-4"
+              className="clay-card rounded-[28px] p-6 space-y-4 bg-white"
             >
               {/* Order Header */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-brand-clay/40 text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-brand-clay/30 text-xs">
                 <div>
                   <span className="text-brand-stone">Order Number:</span>{" "}
                   <strong className="text-brand-charcoal font-serif text-sm">
@@ -102,7 +84,7 @@ export default async function CustomerOrdersPage() {
                     <Clock className="w-3.5 h-3.5" />
                     <span>{new Date(order.createdAt).toLocaleDateString()}</span>
                   </span>
-                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-brand-sage-light text-brand-sage-dark border border-brand-sage/20">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-brand-mint text-emerald-900 border-t border-l border-white/80 shadow-xs">
                     {order.status}
                   </span>
                 </div>
@@ -116,7 +98,7 @@ export default async function CustomerOrdersPage() {
                     className="flex items-center justify-between gap-4 py-2"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-brand-sand shrink-0">
+                      <div className="relative w-14 h-14 rounded-2xl overflow-hidden bg-brand-sand shrink-0 shadow-xs">
                         <Image
                           src={
                             item.product?.images?.[0]?.url ||
@@ -146,7 +128,7 @@ export default async function CustomerOrdersPage() {
                         {formatCurrency(item.totalPrice)}
                       </p>
                       <p className="text-[10px] text-brand-stone">Qty: {item.quantity}</p>
-                      <span className="inline-block mt-1 text-[10px] font-medium text-brand-sage">
+                      <span className="inline-block mt-1 text-[10px] font-semibold text-emerald-800 bg-brand-mint/60 px-2 py-0.5 rounded-full">
                         Fulfillment: {item.fulfillmentStatus}
                       </span>
                     </div>
@@ -155,10 +137,10 @@ export default async function CustomerOrdersPage() {
               </div>
 
               {/* Order Footer */}
-              <div className="pt-3 border-t border-brand-clay/40 flex items-center justify-between text-xs">
+              <div className="pt-3 border-t border-brand-clay/30 flex items-center justify-between text-xs">
                 <Link
                   href={`/order-confirmation/${order.id}`}
-                  className="font-medium text-brand-terracotta hover:underline flex items-center gap-1"
+                  className="font-bold text-brand-terracotta hover:underline flex items-center gap-1"
                 >
                   <span>View Full Receipt</span>
                   <ArrowRight className="w-3 h-3" />

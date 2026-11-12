@@ -60,28 +60,28 @@ export default function MarketplaceFilterBar({
   );
 
   return (
-    <div className="space-y-4 bg-white rounded-3xl p-6 border border-brand-clay/70 shadow-soft">
+    <div className="clay-card rounded-[28px] p-5 sm:p-6 space-y-4">
       {/* Search and Sort Row */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="flex flex-col md:flex-row gap-3.5 items-center justify-between">
         {/* Search Input */}
         <form onSubmit={handleSearchSubmit} className="relative flex-1 w-full">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by keywords, materials (e.g. ceramic, pearl, soy)..."
-            className="w-full pl-10 pr-4 py-2.5 text-sm bg-brand-cream/60 rounded-full border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/40"
+            placeholder="Search handcrafted goods, pottery, botanical jewelry, soy candles..."
+            className="w-full pl-10 pr-4 py-2.5 text-xs text-brand-charcoal clay-input rounded-full placeholder:text-brand-stone/60 focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
           />
           <Search className="w-4 h-4 text-brand-stone absolute left-3.5 top-1/2 -translate-y-1/2" />
         </form>
 
         {/* Store & Sort Dropdowns */}
-        <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-2.5 w-full md:w-auto overflow-x-auto no-scrollbar">
           {/* Store Filter */}
           <select
             value={currentStore}
             onChange={(e) => updateFilters({ store: e.target.value || undefined })}
-            className="px-4 py-2 text-xs font-medium rounded-full bg-brand-cream/60 border border-brand-clay focus:outline-none text-brand-charcoal"
+            className="px-3.5 py-2 text-xs font-semibold rounded-full clay-pill text-brand-charcoal focus:outline-none cursor-pointer"
           >
             <option value="">All Artisan Studios</option>
             {stores.map((s) => (
@@ -92,12 +92,12 @@ export default function MarketplaceFilterBar({
           </select>
 
           {/* Sort Selector */}
-          <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-brand-cream/60 border border-brand-clay text-xs font-medium text-brand-charcoal">
+          <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-full clay-pill text-xs font-semibold text-brand-charcoal shrink-0">
             <ArrowUpDown className="w-3.5 h-3.5 text-brand-stone" />
             <select
               value={currentSort}
               onChange={(e) => updateFilters({ sort: e.target.value })}
-              className="bg-transparent focus:outline-none"
+              className="bg-transparent focus:outline-none cursor-pointer"
             >
               <option value="featured">Featured First</option>
               <option value="newest">Newest Arrivals</option>
@@ -109,7 +109,7 @@ export default function MarketplaceFilterBar({
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="px-3 py-2 rounded-full border border-red-200 text-red-600 hover:bg-red-50 text-xs font-medium flex items-center gap-1 shrink-0 transition-colors"
+              className="px-3.5 py-2 rounded-full bg-red-50 text-red-600 hover:bg-red-100 border border-red-200/80 text-xs font-semibold flex items-center gap-1 shrink-0 transition-all shadow-xs"
             >
               <X className="w-3.5 h-3.5" />
               <span>Clear</span>
@@ -118,45 +118,48 @@ export default function MarketplaceFilterBar({
         </div>
       </div>
 
-      {/* Categories Horizontal Pills (Reference 2 style) */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2">
+      {/* Categories Horizontal Pills (Tactile Clay Pills) */}
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
         <button
           onClick={() => updateFilters({ category: undefined })}
-          className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
+          className={`px-4 py-2 rounded-full text-xs font-bold shrink-0 transition-all ${
             !currentCategory
-              ? "bg-brand-terracotta text-white shadow-xs"
-              : "bg-brand-cream border border-brand-clay text-brand-stone hover:text-brand-charcoal hover:bg-white"
+              ? "clay-pill-btn text-white"
+              : "clay-pill text-brand-stone hover:text-brand-charcoal hover:shadow-clay-card"
           }`}
         >
           All Items
         </button>
 
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() =>
-              updateFilters({
-                category: currentCategory === cat.slug ? undefined : cat.slug,
-              })
-            }
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
-              currentCategory === cat.slug
-                ? "bg-brand-terracotta text-white shadow-xs"
-                : "bg-brand-cream border border-brand-clay text-brand-stone hover:text-brand-charcoal hover:bg-white"
-            }`}
-          >
-            {cat.name}
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const isActive = currentCategory === cat.slug;
+          return (
+            <button
+              key={cat.id}
+              onClick={() =>
+                updateFilters({
+                  category: isActive ? undefined : cat.slug,
+                })
+              }
+              className={`px-4 py-2 rounded-full text-xs font-bold shrink-0 transition-all ${
+                isActive
+                  ? "clay-pill-btn text-white"
+                  : "clay-pill text-brand-stone hover:text-brand-charcoal hover:shadow-clay-card"
+              }`}
+            >
+              {cat.name}
+            </button>
+          );
+        })}
       </div>
 
       {/* Result Count Status */}
-      <div className="pt-2 border-t border-brand-clay/30 flex items-center justify-between text-xs text-brand-stone">
+      <div className="pt-3 border-t border-brand-clay/30 flex items-center justify-between text-xs text-brand-stone">
         <span>
-          Showing <strong className="text-brand-charcoal">{totalProducts}</strong> handcrafted pieces
+          Showing <strong className="text-brand-charcoal font-bold">{totalProducts}</strong> handcrafted pieces
         </span>
         {currentCategory && (
-          <span className="text-brand-terracotta font-medium">
+          <span className="text-brand-terracotta font-bold">
             Category: {categories.find((c) => c.slug === currentCategory)?.name}
           </span>
         )}

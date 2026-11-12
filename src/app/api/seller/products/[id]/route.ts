@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getCurrentUser, isOwner } from "@/lib/auth";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
+import { mapProduct } from "@/lib/supabase/mappers";
 
 export async function GET(
-  req: Request,
+  _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -13,6 +16,28 @@ export async function GET(
     }
 
     const { id } = await params;
+
+    if (isSupabaseConfigured()) {
+      const supabase = await createClient();
+      const { data: product, error } = await supabase
+        .from("products")
+        .select(`
+          *,
+          categories (*),
+          product_images (*),
+          product_variants (*)
+        `)
+        .eq("id", id)
+        .eq("store_id", user.storeId)
+        .maybeSingle();
+
+      if (error || !product) {
+        return NextResponse.json({ error: "Product not found or unauthorized" }, { status: 404 });
+      }
+
+      return NextResponse.json({ product: mapProduct(product) });
+    }
+
     const product = await prisma.product.findUnique({
       where: { id },
       include: {
@@ -44,11 +69,6 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const existing = await prisma.product.findUnique({ where: { id } });
-    if (!existing || existing.storeId !== user.storeId) {
-      return NextResponse.json({ error: "Product not found or unauthorized" }, { status: 404 });
-    }
-
     const body = await req.json();
     const {
       title,
@@ -64,6 +84,78 @@ export async function PUT(
       imageUrl,
     } = body;
 
+    if (isSupabaseConfigured()) {
+      const supabase = await createClient();
+      const { data: existing } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", id)
+        .eq("store_id", user.storeId)
+        .maybeSingle();
+
+      if (!existing) {
+        return NextResponse.json({ error: "Product not found or unauthorized" }, { status: 404 });
+      }
+
+      const updateFields: Record<string, unknown> = {};
+      if (title) updateFields.title = String(title).trim();
+      if (description !== undefined) updateFields.description = description;
+      if (categoryId) updateFields.category_id = categoryId;
+      if (price !== undefined) updateFields.price = Math.round(Number(price) * 100);
+      if (compareAtPrice !== undefined) {
+        updateFields.compare_at_price = compareAtPrice ? Math.round(Number(compareAtPrice) * 100) : null;
+      }
+      if (stock !== undefined) updateFields.stock = Number(stock);
+      if (status) updateFields.status = status;
+      if (tags !== undefined) updateFields.tags = tags;
+      if (craftDetails !== undefined) updateFields.craft_details = craftDetails;
+      if (careInstructions !== undefined) updateFields.care_instructions = careInstructions;
+
+      const { data: updated, error: updateErr } = await supabase
+        .from("products")
+        .update(updateFields)
+        .eq("id", id)
+        .eq("store_id", user.storeId)
+        .select("*")
+        .single();
+
+      if (updateErr || !updated) {
+        return NextResponse.json({ error: updateErr?.message || "Failed to update product" }, { status: 500 });
+      }
+
+      if (imageUrl) {
+        await supabase.from("product_images").delete().eq("product_id", id);
+        await supabase.from("product_images").insert({
+          product_id: id,
+          url: imageUrl,
+          alt_text: updated.title,
+          is_primary: true,
+          display_order: 0,
+        });
+      }
+
+      const { data: hydrated } = await supabase
+        .from("products")
+        .select(`
+          *,
+          categories (*),
+          product_images (*),
+          product_variants (*)
+        `)
+        .eq("id", id)
+        .single();
+
+      return NextResponse.json({
+        success: true,
+        product: mapProduct(hydrated ?? updated),
+      });
+    }
+
+    const existing = await prisma.product.findUnique({ where: { id } });
+    if (!existing || existing.storeId !== user.storeId) {
+      return NextResponse.json({ error: "Product not found or unauthorized" }, { status: 404 });
+    }
+
     const updated = await prisma.product.update({
       where: { id },
       data: {
@@ -71,7 +163,12 @@ export async function PUT(
         description: description !== undefined ? description : existing.description,
         categoryId: categoryId || existing.categoryId,
         price: price !== undefined ? Math.round(Number(price) * 100) : existing.price,
-        compareAtPrice: compareAtPrice !== undefined ? (compareAtPrice ? Math.round(Number(compareAtPrice) * 100) : null) : existing.compareAtPrice,
+        compareAtPrice:
+          compareAtPrice !== undefined
+            ? compareAtPrice
+              ? Math.round(Number(compareAtPrice) * 100)
+              : null
+            : existing.compareAtPrice,
         stock: stock !== undefined ? Number(stock) : existing.stock,
         status: status || existing.status,
         tags: tags !== undefined ? tags : existing.tags,
@@ -86,7 +183,6 @@ export async function PUT(
     });
 
     if (imageUrl) {
-      // update primary image
       await prisma.productImage.deleteMany({ where: { productId: id } });
       await prisma.productImage.create({
         data: {
@@ -107,7 +203,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  req: Request,
+  _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -117,6 +213,33 @@ export async function DELETE(
     }
 
     const { id } = await params;
+
+    if (isSupabaseConfigured()) {
+      const supabase = await createClient();
+      const { data: existing } = await supabase
+        .from("products")
+        .select("id, store_id")
+        .eq("id", id)
+        .eq("store_id", user.storeId)
+        .maybeSingle();
+
+      if (!existing) {
+        return NextResponse.json({ error: "Product not found or unauthorized" }, { status: 404 });
+      }
+
+      const { error } = await supabase
+        .from("products")
+        .delete()
+        .eq("id", id)
+        .eq("store_id", user.storeId);
+
+      if (error) {
+        return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
+      }
+
+      return NextResponse.json({ success: true, message: "Product deleted" });
+    }
+
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing || existing.storeId !== user.storeId) {
       return NextResponse.json({ error: "Product not found or unauthorized" }, { status: 404 });

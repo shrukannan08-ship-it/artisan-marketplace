@@ -93,145 +93,163 @@ export default function SellerDashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Header */}
+      {/* Welcome Header echoing reference design */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold tracking-wider uppercase text-brand-terracotta">
-            Artisan Studio Portal
-          </span>
-          <h1 className="font-serif text-3xl font-bold text-brand-charcoal mt-1">
-            Studio Performance &amp; Orders
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold bg-brand-peach/25 text-[#9E3F28] border border-brand-peach/50 mb-1.5 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Studio Management Hub</span>
+          </div>
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-brand-charcoal">
+            Dashboard
           </h1>
           <p className="text-xs text-brand-stone mt-1">
-            Real metrics derived from your authentic customer sales.
+            Real metrics derived from your authentic customer sales &amp; inventory.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Quick Actions matching the reference design pills */}
+        <div className="flex flex-wrap items-center gap-2.5">
           <Link
             href="/seller/products/new"
-            className="btn-primary text-xs px-5 py-2.5 shadow-clay flex items-center gap-1.5"
+            className="clay-pill-btn bg-gradient-to-b from-[#df7c64] to-[#C86D51] text-white hover:brightness-105"
           >
-            <span>+ New Product</span>
+            <Sparkles className="w-3.5 h-3.5 text-brand-butter" />
+            <span>Add First Creation</span>
+          </Link>
+          <Link
+            href="/seller/products"
+            className="clay-pill px-4 py-2 hover:bg-white text-brand-charcoal"
+          >
+            <span>Catalog</span>
+          </Link>
+          <Link
+            href="/seller/orders"
+            className="clay-pill px-4 py-2 hover:bg-white text-brand-charcoal"
+          >
+            <span>Orders</span>
           </Link>
         </div>
       </div>
 
-      {/* 1. TACTILE METRIC CARDS (Inspired by Reference 1 & 4) */}
+      {/* 1. TACTILE METRIC CARDS (Directly inspired by Reference Design) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Revenue Card with Soft Topographic Curve */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft relative overflow-hidden flex flex-col justify-between">
+        {/* Revenue Card with Peach Plate */}
+        <div className="clay-card p-6 relative overflow-hidden flex flex-col justify-between bg-gradient-to-br from-[#FFF8F5] via-[#FCFAF7] to-[#FBECE6] border-brand-peach/30">
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-stone">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-brand-stone">
                 Total Revenue
               </span>
-              <div className="w-8 h-8 rounded-full bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[16px] bg-gradient-to-b from-[#df7c64] to-[#C86D51] text-white flex items-center justify-center shadow-clay-circle border-t border-white/40">
                 <DollarSign className="w-4 h-4" />
               </div>
             </div>
             <p className="font-serif text-3xl font-bold text-brand-charcoal mt-3">
               {formatCurrency(metrics.totalRevenueCents)}
             </p>
-            <p className="text-[11px] text-brand-sage font-medium mt-1 flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span>Real order transactions</span>
-            </p>
+            <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-peach/30 text-[#9E3F28] border border-brand-peach/50 shadow-xs">
+              <TrendingUp className="w-3 h-3" />
+              <span>Verified Patron Orders</span>
+            </div>
           </div>
-
-          {/* Decorative Clay Curve */}
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-brand-terracotta/10 pointer-events-none" />
+          <div className="absolute -bottom-8 -right-8 w-28 h-28 rounded-full bg-brand-peach/20 blur-xl pointer-events-none" />
         </div>
 
-        {/* Orders Card */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft flex flex-col justify-between">
-          <div>
+        {/* Orders Card with Buttercup Yellow Plate */}
+        <div className="clay-card p-6 relative overflow-hidden flex flex-col justify-between bg-gradient-to-br from-[#FFFCF0] via-[#FCFAF7] to-[#FAF1D6] border-brand-butter/50">
+          <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-stone">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-brand-stone">
                 Total Orders
               </span>
-              <div className="w-8 h-8 rounded-full bg-brand-gold/10 text-brand-gold flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[16px] bg-gradient-to-b from-brand-butter to-brand-butter-dark text-[#6E4F10] flex items-center justify-center shadow-clay-circle border-t border-white/60">
                 <ShoppingBag className="w-4 h-4" />
               </div>
             </div>
             <p className="font-serif text-3xl font-bold text-brand-charcoal mt-3">
               {metrics.totalOrdersCount}
             </p>
-            <p className="text-[11px] text-brand-stone mt-1">
-              <strong className="text-brand-terracotta">{metrics.pendingOrdersCount}</strong> awaiting fulfillment
-            </p>
+            <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-butter/50 text-[#6E4F10] border border-brand-butter/70 shadow-xs">
+              <span>{metrics.pendingOrdersCount} awaiting fulfillment</span>
+            </div>
           </div>
+          <div className="absolute -bottom-8 -right-8 w-28 h-28 rounded-full bg-brand-butter/25 blur-xl pointer-events-none" />
         </div>
 
-        {/* Active Products Card */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft flex flex-col justify-between">
-          <div>
+        {/* Active Products Card with Mint Eucalyptus Plate */}
+        <div className="clay-card p-6 relative overflow-hidden flex flex-col justify-between bg-gradient-to-br from-[#F5FCF9] via-[#FCFAF7] to-[#E5F5EF] border-brand-mint/50">
+          <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-stone">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-brand-stone">
                 Active Catalog
               </span>
-              <div className="w-8 h-8 rounded-full bg-brand-sage/10 text-brand-sage flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[16px] bg-gradient-to-b from-brand-mint to-brand-mint-dark text-[#1F5440] flex items-center justify-center shadow-clay-circle border-t border-white/60">
                 <Package className="w-4 h-4" />
               </div>
             </div>
             <p className="font-serif text-3xl font-bold text-brand-charcoal mt-3">
               {metrics.activeProductsCount}
             </p>
-            <p className="text-[11px] text-brand-stone mt-1">
-              Handcrafted listings published
-            </p>
+            <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-mint/40 text-[#1F5440] border border-brand-mint/60 shadow-xs">
+              <span>Handcrafted pieces published</span>
+            </div>
           </div>
+          <div className="absolute -bottom-8 -right-8 w-28 h-28 rounded-full bg-brand-mint/25 blur-xl pointer-events-none" />
         </div>
 
-        {/* Low Stock Warning Card */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 shadow-soft flex flex-col justify-between">
-          <div>
+        {/* Inventory Alerts Card with Sky Blue Plate */}
+        <div className="clay-card p-6 relative overflow-hidden flex flex-col justify-between bg-gradient-to-br from-[#F4FAFE] via-[#FCFAF7] to-[#E3EFF9] border-brand-sky/50">
+          <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-stone">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-brand-stone">
                 Inventory Alerts
               </span>
-              <div className="w-8 h-8 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[16px] bg-gradient-to-b from-brand-sky to-brand-sky-dark text-[#1A4F72] flex items-center justify-center shadow-clay-circle border-t border-white/60">
                 <AlertTriangle className="w-4 h-4" />
               </div>
             </div>
             <p className="font-serif text-3xl font-bold text-brand-charcoal mt-3">
               {metrics.lowStockCount}
             </p>
-            <p className="text-[11px] text-amber-700 font-medium mt-1">
-              {metrics.lowStockCount > 0 ? "Requires restock soon" : "Healthy inventory levels"}
-            </p>
+            <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-sky/40 text-[#1A4F72] border border-brand-sky/60 shadow-xs">
+              <span>{metrics.lowStockCount > 0 ? "Requires restock" : "Healthy inventory"}</span>
+            </div>
           </div>
+          <div className="absolute -bottom-8 -right-8 w-28 h-28 rounded-full bg-brand-sky/25 blur-xl pointer-events-none" />
         </div>
       </div>
 
-      {/* 2. ONBOARDING & STUDIO CHECKLIST */}
-      <div className="bg-gradient-to-r from-brand-blush via-white to-brand-sand rounded-3xl p-6 sm:p-8 border border-brand-clay shadow-soft">
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="w-4 h-4 text-brand-gold" />
+      {/* 2. MAKER STUDIO LAUNCH CHECKLIST (Layered Tactile Card) */}
+      <div className="clay-card p-6 sm:p-8 bg-gradient-to-r from-brand-peach/15 via-[#FCFAF7] to-brand-butter/20 border-brand-clay/80">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-clay-circle text-brand-terracotta">
+            <Sparkles className="w-4 h-4 text-brand-gold" />
+          </div>
           <h2 className="font-serif text-lg font-bold text-brand-charcoal">
             Maker Studio Launch Checklist
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-brand-clay/60 flex items-center gap-3">
+          <div className="p-4 rounded-[22px] bg-white border border-brand-clay/70 shadow-subtle flex items-center gap-3">
             <CheckCircle2 className="w-5 h-5 text-brand-sage shrink-0" />
             <div>
-              <p className="font-bold text-brand-charcoal">Storefront Published</p>
-              <p className="text-brand-stone text-[11px]">Brand story &amp; banner configured</p>
+              <p className="font-bold text-brand-charcoal">Storefront Active</p>
+              <p className="text-brand-stone text-[11px]">Brand story &amp; location configured</p>
             </div>
           </div>
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-brand-clay/60 flex items-center gap-3">
+          <div className="p-4 rounded-[22px] bg-white border border-brand-clay/70 shadow-subtle flex items-center gap-3">
             <CheckCircle2 className="w-5 h-5 text-brand-sage shrink-0" />
             <div>
-              <p className="font-bold text-brand-charcoal">Products Listed</p>
-              <p className="text-brand-stone text-[11px]">{metrics.activeProductsCount} creations in catalog</p>
+              <p className="font-bold text-brand-charcoal">Catalog Ready</p>
+              <p className="text-brand-stone text-[11px]">{metrics.activeProductsCount} products published</p>
             </div>
           </div>
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-brand-clay/60 flex items-center gap-3">
+          <div className="p-4 rounded-[22px] bg-white border border-brand-clay/70 shadow-subtle flex items-center gap-3">
             <CheckCircle2 className="w-5 h-5 text-brand-sage shrink-0" />
             <div>
-              <p className="font-bold text-brand-charcoal">Orders Ready</p>
-              <p className="text-brand-stone text-[11px]">Encrypted checkout enabled</p>
+              <p className="font-bold text-brand-charcoal">Checkout Enabled</p>
+              <p className="text-brand-stone text-[11px]">Direct patron payments active</p>
             </div>
           </div>
         </div>

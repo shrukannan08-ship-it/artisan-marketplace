@@ -7,7 +7,6 @@ import {
   Search,
   ShoppingBag,
   Heart,
-  User as UserIcon,
   Store,
   Menu,
   X,
@@ -15,6 +14,7 @@ import {
   ChevronDown,
   LogOut,
   Package,
+  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
@@ -104,29 +104,29 @@ export default function Navbar() {
           <div className="flex items-center lg:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-brand-charcoal hover:bg-brand-sand/60"
+              className="w-10 h-10 rounded-2xl bg-white/80 border border-brand-clay/70 text-brand-charcoal hover:bg-brand-sand/60 flex items-center justify-center shadow-subtle"
               aria-label="Toggle Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-2xl bg-brand-terracotta flex items-center justify-center text-white shadow-soft group-hover:scale-105 transition-transform">
-              <span className="font-serif text-xl font-bold italic">M</span>
+          {/* Brand Logo with Tactile Clay Icon */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-11 h-11 rounded-[18px] bg-gradient-to-b from-[#df7c64] to-[#C86D51] border-t border-white/50 border-b border-black/10 flex items-center justify-center text-white shadow-clay-pill group-hover:scale-105 transition-transform duration-300">
+              <span className="font-serif text-2xl font-bold italic tracking-tight">M</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-2xl font-bold tracking-tight text-brand-charcoal leading-none">
+              <span className="font-serif text-2xl font-bold tracking-tight text-brand-charcoal leading-none group-hover:text-brand-terracotta transition-colors">
                 Mitti &amp; Muse
               </span>
-              <span className="text-[10px] uppercase tracking-widest text-brand-stone font-medium">
+              <span className="text-[10px] uppercase tracking-widest text-brand-stone font-semibold mt-0.5">
                 Artisan Marketplace
               </span>
             </div>
           </Link>
 
-          {/* Desktop Search Bar (Reference 2 style) */}
+          {/* Desktop Search Bar (Clay Inset Well) */}
           <form
             onSubmit={handleSearchSubmit}
             className="hidden md:flex flex-1 max-w-md mx-6 relative"
@@ -135,23 +135,23 @@ export default function Navbar() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search pottery, jewelry, candles, DIY kits..."
-              className="w-full pl-10 pr-4 py-2.5 text-sm bg-white/90 rounded-full border border-brand-clay focus:outline-none focus:ring-2 focus:ring-brand-terracotta/40 focus:border-brand-terracotta shadow-subtle text-brand-charcoal placeholder:text-brand-stone/60"
+              placeholder="Search pottery, jewelry, candles, DIY craft kits..."
+              className="w-full pl-10 pr-4 py-2.5 text-xs font-medium bg-[#FAF4ED] rounded-full border border-brand-clay/80 shadow-clay-inset focus:outline-none focus:ring-2 focus:ring-brand-peach/40 focus:border-brand-peach transition-all text-brand-charcoal placeholder:text-brand-stone/60"
             />
             <Search className="w-4 h-4 text-brand-stone absolute left-3.5 top-1/2 -translate-y-1/2" />
           </form>
 
           {/* Actions & Profile */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             {/* Wishlist Link */}
             <Link
               href="/account/wishlist"
-              className="relative p-2.5 rounded-full hover:bg-white text-brand-charcoal transition-colors"
+              className="clay-circle-btn relative"
               title="Saved Wishlist"
             >
-              <Heart className="w-5 h-5" />
+              <Heart className="w-4 h-4 text-brand-charcoal hover:text-brand-terracotta transition-colors" />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-brand-terracotta text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-terracotta text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
                   {wishlistCount}
                 </span>
               )}
@@ -160,12 +160,12 @@ export default function Navbar() {
             {/* Cart Button */}
             <button
               onClick={() => setIsCartDrawerOpen(true)}
-              className="relative p-2.5 rounded-full hover:bg-white text-brand-charcoal transition-colors flex items-center"
+              className="clay-circle-btn relative"
               title="Shopping Cart"
             >
-              <ShoppingBag className="w-5 h-5" />
+              <ShoppingBag className="w-4 h-4 text-brand-charcoal hover:text-brand-terracotta transition-colors" />
               {itemCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-brand-terracotta text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-terracotta text-white text-[10px] font-bold flex items-center justify-center shadow-xs">
                   {itemCount}
                 </span>
               )}
@@ -200,16 +200,28 @@ export default function Navbar() {
                         </span>
                       </div>
 
-                      {(user.role === "SELLER" || user.role === "OWNER") && (
+                      {(user.role === "SELLER" || user.role === "OWNER" || user.role === "ADMIN") && (
                         <div className="py-1 border-b border-brand-clay/40">
-                          <Link
-                            href="/seller/dashboard"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-brand-charcoal hover:bg-brand-sand/50"
-                          >
-                            <Store className="w-4 h-4 text-brand-terracotta" />
-                            <span>Studio Dashboard</span>
-                          </Link>
+                          {user.role === "ADMIN" && (
+                            <Link
+                              href="/admin"
+                              onClick={() => setUserDropdownOpen(false)}
+                              className="flex items-center gap-2 px-4 py-2 text-sm text-brand-charcoal hover:bg-brand-sand/50"
+                            >
+                              <ShieldCheck className="w-4 h-4 text-brand-sage" />
+                              <span>Admin Console</span>
+                            </Link>
+                          )}
+                          {(user.role === "SELLER" || user.role === "OWNER") && (
+                            <Link
+                              href="/seller/dashboard"
+                              onClick={() => setUserDropdownOpen(false)}
+                              className="flex items-center gap-2 px-4 py-2 text-sm text-brand-charcoal hover:bg-brand-sand/50"
+                            >
+                              <Store className="w-4 h-4 text-brand-terracotta" />
+                              <span>Studio Dashboard</span>
+                            </Link>
+                          )}
                           {user.storeSlug && (
                             <Link
                               href={`/store/${user.storeSlug}`}
@@ -261,15 +273,15 @@ export default function Navbar() {
                 <div className="flex items-center gap-2">
                   <Link
                     href="/auth/customer/login"
-                    className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-brand-charcoal hover:bg-white transition-colors"
+                    className="clay-pill px-3.5 py-1.5 text-brand-charcoal hover:text-brand-terracotta hover:bg-white transition-all"
                   >
-                    Customer Sign In
+                    <span>Customer Sign In</span>
                   </Link>
                   <Link
                     href="/auth/owner/register"
-                    className="px-3.5 py-1.5 rounded-full bg-brand-terracotta text-white text-xs font-bold hover:bg-brand-terracotta-dark shadow-subtle transition-all flex items-center gap-1.5"
+                    className="clay-pill-btn bg-gradient-to-b from-[#df7c64] to-[#C86D51] text-white px-4 py-2 hover:brightness-105 flex items-center gap-1.5"
                   >
-                    <Store className="w-3.5 h-3.5" />
+                    <Sparkles className="w-3.5 h-3.5 text-brand-butter" />
                     <span>Start Your Store</span>
                   </Link>
                 </div>

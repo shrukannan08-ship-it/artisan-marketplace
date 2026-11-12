@@ -89,38 +89,40 @@ export default function ProductDetailView({
       </nav>
 
       {/* Main Showcase Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
         {/* Left: Gallery */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-brand-sand/50 border border-brand-clay/70 shadow-card">
-            <Image
-              src={selectedImage}
-              alt={product.title}
-              fill
-              priority
-              className="object-cover transition-all duration-300"
-            />
-            {product.featured && (
-              <div className="absolute top-4 left-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-brand-terracotta text-white shadow-xs">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Curator&apos;s Pick</span>
-                </span>
-              </div>
-            )}
+          <div className="clay-card rounded-[32px] p-2.5 sm:p-3 overflow-hidden bg-white">
+            <div className="relative aspect-square w-full rounded-[26px] overflow-hidden bg-brand-sand/40">
+              <Image
+                src={selectedImage}
+                alt={product.title}
+                fill
+                priority
+                className="object-cover transition-all duration-300"
+              />
+              {product.featured && (
+                <div className="absolute top-4 left-4">
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-butter text-brand-charcoal shadow-clay-pill border border-white/90">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Curator&apos;s Pick</span>
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Thumbnails */}
           {product.images && product.images.length > 1 && (
-            <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-1">
               {product.images.map((img) => (
                 <button
                   key={img.id}
                   onClick={() => setSelectedImage(img.url)}
-                  className={`relative w-20 h-20 rounded-2xl overflow-hidden bg-brand-sand/50 border-2 transition-all shrink-0 ${
+                  className={`relative w-20 h-20 rounded-2xl overflow-hidden bg-brand-sand/40 transition-all shrink-0 ${
                     selectedImage === img.url
-                      ? "border-brand-terracotta scale-105 shadow-sm"
-                      : "border-brand-clay/70 opacity-70 hover:opacity-100"
+                      ? "ring-2 ring-brand-terracotta scale-105 shadow-clay-card"
+                      : "opacity-75 hover:opacity-100 border border-brand-clay/60 shadow-xs"
                   }`}
                 >
                   <Image
@@ -137,14 +139,14 @@ export default function ProductDetailView({
 
         {/* Right: Product Info & Actions */}
         <div className="lg:col-span-5 space-y-6">
-          {/* Store info */}
+          {/* Store info strip */}
           {product.store && (
-            <div className="flex items-center justify-between pb-2 border-b border-brand-clay/40">
+            <div className="clay-card rounded-2xl p-3 sm:p-3.5 flex items-center justify-between">
               <Link
                 href={`/store/${product.store.slug}`}
-                className="flex items-center gap-2 group"
+                className="flex items-center gap-2.5 group"
               >
-                <div className="w-8 h-8 rounded-full bg-brand-sand overflow-hidden border border-brand-clay relative">
+                <div className="w-9 h-9 rounded-full bg-brand-sand overflow-hidden border border-brand-clay relative shadow-xs">
                   {product.store.logoUrl ? (
                     <Image
                       src={product.store.logoUrl}
@@ -168,10 +170,10 @@ export default function ProductDetailView({
                 </div>
               </Link>
 
-              <div className="flex items-center gap-1 text-xs font-semibold text-brand-charcoal">
+              <div className="flex items-center gap-1 text-xs font-bold text-brand-charcoal bg-brand-cream/80 px-2.5 py-1 rounded-full border border-brand-clay/50 shadow-xs">
                 <Star className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
                 <span>{product.store.rating.toFixed(1)}</span>
-                <span className="text-brand-stone text-[11px]">
+                <span className="text-brand-stone text-[10px] font-normal">
                   ({product.store.reviewCount})
                 </span>
               </div>
@@ -183,15 +185,15 @@ export default function ProductDetailView({
               {product.title}
             </h1>
             {product.category && (
-              <p className="text-xs font-medium text-brand-terracotta mt-1">
+              <span className="inline-block mt-1 px-3 py-0.5 rounded-full text-xs font-bold bg-brand-butter/60 text-brand-charcoal border border-amber-200/60 shadow-xs">
                 {product.category.name}
-              </p>
+              </span>
             )}
           </div>
 
           {/* Price */}
           <div className="flex items-baseline gap-3">
-            <span className="font-serif text-3xl font-bold text-brand-charcoal">
+            <span className="font-serif text-3xl sm:text-4xl font-bold text-brand-charcoal">
               {formatCurrency(currentPrice)}
             </span>
             {product.compareAtPrice && product.compareAtPrice > currentPrice && (
@@ -199,19 +201,19 @@ export default function ProductDetailView({
                 {formatCurrency(product.compareAtPrice)}
               </span>
             )}
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-brand-sage-light text-brand-sage-dark">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-mint text-brand-charcoal shadow-xs">
               Taxes included
             </span>
           </div>
 
-          <p className="text-sm text-brand-stone leading-relaxed">
+          <p className="text-xs sm:text-sm text-brand-stone leading-relaxed">
             {product.description}
           </p>
 
           {/* Variants Selector */}
           {product.variants && product.variants.length > 0 && (
-            <div className="space-y-3 pt-2">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-brand-charcoal">
+            <div className="space-y-2.5 pt-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-brand-charcoal">
                 {product.variants[0]?.name || "Select Option"}:{" "}
                 <span className="text-brand-terracotta normal-case font-bold">
                   {selectedVariant?.option}
@@ -219,25 +221,28 @@ export default function ProductDetailView({
               </label>
 
               <div className="flex flex-wrap gap-2">
-                {product.variants.map((v) => (
-                  <button
-                    key={v.id}
-                    onClick={() => setSelectedVariant(v)}
-                    className={`px-4 py-2 rounded-2xl text-xs font-medium border transition-all ${
-                      selectedVariant?.id === v.id
-                        ? "bg-brand-terracotta text-white border-brand-terracotta shadow-xs"
-                        : "bg-white text-brand-charcoal border-brand-clay hover:border-brand-stone/50"
-                    }`}
-                  >
-                    <span>{v.option}</span>
-                    {v.priceDelta !== 0 && (
-                      <span className="ml-1 opacity-80">
-                        ({v.priceDelta > 0 ? "+" : ""}
-                        {formatCurrency(v.priceDelta)})
-                      </span>
-                    )}
-                  </button>
-                ))}
+                {product.variants.map((v) => {
+                  const isSelected = selectedVariant?.id === v.id;
+                  return (
+                    <button
+                      key={v.id}
+                      onClick={() => setSelectedVariant(v)}
+                      className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                        isSelected
+                          ? "clay-pill-btn text-white"
+                          : "clay-pill text-brand-charcoal hover:shadow-clay-card"
+                      }`}
+                    >
+                      <span>{v.option}</span>
+                      {v.priceDelta !== 0 && (
+                        <span className="ml-1 opacity-90">
+                          ({v.priceDelta > 0 ? "+" : ""}
+                          {formatCurrency(v.priceDelta)})
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -246,16 +251,16 @@ export default function ProductDetailView({
           <div className="flex items-center gap-2 text-xs font-medium">
             {availableStock > 0 ? (
               availableStock <= product.lowStockThreshold ? (
-                <span className="text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                <span className="text-amber-800 bg-amber-50 px-3.5 py-1 rounded-full border border-amber-200 font-semibold shadow-xs">
                   ⚠️ Only {availableStock} handcrafted pieces left in stock!
                 </span>
               ) : (
-                <span className="text-brand-sage-dark bg-brand-sage-light px-3 py-1 rounded-full border border-brand-sage/20">
+                <span className="text-emerald-800 bg-brand-mint/70 px-3.5 py-1 rounded-full border border-emerald-200/60 font-semibold shadow-xs">
                   ✓ In Stock &amp; Ready to Dispatch
                 </span>
               )
             ) : (
-              <span className="text-red-700 bg-red-50 px-3 py-1 rounded-full border border-red-200">
+              <span className="text-red-700 bg-red-50 px-3.5 py-1 rounded-full border border-red-200 font-semibold shadow-xs">
                 Currently Out of Stock
               </span>
             )}
@@ -263,31 +268,33 @@ export default function ProductDetailView({
 
           {/* Quantity and Actions */}
           <div className="space-y-4 pt-2">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center border border-brand-clay rounded-full bg-white px-3 py-1.5 shadow-subtle">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex items-center clay-card rounded-full px-2.5 py-1 shadow-clay-card bg-white">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-1 text-brand-stone hover:text-brand-charcoal"
+                  className="w-7 h-7 rounded-full clay-circle-btn flex items-center justify-center text-brand-stone hover:text-brand-charcoal"
                   disabled={quantity <= 1}
+                  aria-label="Decrease quantity"
                 >
-                  <Minus className="w-4 h-4" />
+                  <Minus className="w-3.5 h-3.5" />
                 </button>
-                <span className="w-10 text-center text-sm font-bold text-brand-charcoal">
+                <span className="w-8 text-center text-xs font-bold text-brand-charcoal">
                   {quantity}
                 </span>
                 <button
                   onClick={() => setQuantity(Math.min(availableStock, quantity + 1))}
-                  className="p-1 text-brand-stone hover:text-brand-charcoal"
+                  className="w-7 h-7 rounded-full clay-circle-btn flex items-center justify-center text-brand-stone hover:text-brand-charcoal"
                   disabled={quantity >= availableStock}
+                  aria-label="Increase quantity"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
 
               <button
                 onClick={handleAddToCart}
                 disabled={availableStock === 0}
-                className="flex-1 btn-primary py-3.5 text-sm shadow-clay"
+                className="flex-1 clay-pill-btn py-3.5 text-xs sm:text-sm font-bold text-white flex items-center justify-center gap-2"
               >
                 {addedAnimation ? (
                   <>
@@ -304,21 +311,21 @@ export default function ProductDetailView({
 
               <button
                 onClick={() => toggleWishlist(product)}
-                className={`p-3.5 rounded-full border border-brand-clay transition-all shadow-subtle ${
+                className={`w-11 h-11 rounded-full clay-circle-btn flex items-center justify-center transition-all ${
                   isFavorite
-                    ? "bg-red-50 border-red-200 text-red-500"
-                    : "bg-white text-brand-charcoal hover:bg-brand-sand"
+                    ? "text-red-500 bg-red-50"
+                    : "text-brand-charcoal"
                 }`}
                 title={isFavorite ? "Remove from wishlist" : "Save to wishlist"}
               >
-                <Heart className={`w-5 h-5 ${isFavorite ? "fill-red-500" : ""}`} />
+                <Heart className={`w-4 h-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
               </button>
             </div>
           </div>
 
           {/* Maker Direct Contact / Custom Order Button */}
           {product.store && (
-            <div className="p-4 rounded-2xl bg-brand-sand/60 border border-brand-clay flex items-center justify-between">
+            <div className="p-4 rounded-2xl clay-card bg-brand-butter/25 flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-brand-charcoal">
                   Want something customized?
@@ -329,7 +336,7 @@ export default function ProductDetailView({
               </div>
               <button
                 onClick={() => setIsEnquiryModalOpen(true)}
-                className="px-4 py-2 rounded-full bg-white border border-brand-clay text-xs font-semibold text-brand-charcoal hover:bg-brand-cream shadow-xs flex items-center gap-1.5 transition-all"
+                className="px-4 py-2 rounded-full clay-pill text-xs font-bold text-brand-charcoal hover:shadow-clay-card flex items-center gap-1.5 transition-all"
               >
                 <MessageCircle className="w-3.5 h-3.5 text-brand-terracotta" />
                 <span>Custom Request</span>
@@ -338,25 +345,25 @@ export default function ProductDetailView({
           )}
 
           {/* Reassurance Features */}
-          <div className="grid grid-cols-3 gap-3 pt-4 border-t border-brand-clay/40 text-center text-[11px] font-medium text-brand-stone">
-            <div className="p-3 rounded-2xl bg-white border border-brand-clay/60">
+          <div className="grid grid-cols-3 gap-3 pt-3 border-t border-brand-clay/30 text-center text-[11px] font-medium text-brand-stone">
+            <div className="p-3 rounded-2xl clay-card bg-white">
               <Truck className="w-4 h-4 text-brand-terracotta mx-auto mb-1" />
               <span>Ships in {product.estimatedDispatchDays} days</span>
             </div>
-            <div className="p-3 rounded-2xl bg-white border border-brand-clay/60">
+            <div className="p-3 rounded-2xl clay-card bg-white">
               <ShieldCheck className="w-4 h-4 text-brand-sage mx-auto mb-1" />
               <span>Authentic Craft</span>
             </div>
-            <div className="p-3 rounded-2xl bg-white border border-brand-clay/60">
+            <div className="p-3 rounded-2xl clay-card bg-white">
               <RotateCcw className="w-4 h-4 text-brand-gold mx-auto mb-1" />
               <span>14-day Returns</span>
             </div>
           </div>
 
           {/* Craftsmanship & Details Accordion / Tabs */}
-          <div className="space-y-3 pt-4 border-t border-brand-clay/40 text-xs">
+          <div className="space-y-3 pt-3 border-t border-brand-clay/30 text-xs">
             {product.craftDetails && (
-              <div className="p-4 rounded-2xl bg-white border border-brand-clay/60 space-y-1">
+              <div className="p-4 rounded-2xl clay-card bg-white space-y-1">
                 <span className="font-bold text-brand-charcoal uppercase tracking-wider text-[10px]">
                   Craftsmanship &amp; Materials
                 </span>
@@ -365,7 +372,7 @@ export default function ProductDetailView({
             )}
 
             {product.careInstructions && (
-              <div className="p-4 rounded-2xl bg-white border border-brand-clay/60 space-y-1">
+              <div className="p-4 rounded-2xl clay-card bg-white space-y-1">
                 <span className="font-bold text-brand-charcoal uppercase tracking-wider text-[10px]">
                   Care Instructions
                 </span>
@@ -378,14 +385,14 @@ export default function ProductDetailView({
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <section className="pt-12 border-t border-brand-clay/60">
+        <section className="pt-12 border-t border-brand-clay/40">
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-serif text-2xl font-bold text-brand-charcoal">
               More Handcrafted Pieces You Might Love
             </h2>
             <Link
               href="/marketplace"
-              className="text-xs font-semibold text-brand-stone hover:text-brand-terracotta"
+              className="text-xs font-bold text-brand-stone hover:text-brand-terracotta"
             >
               View All &rarr;
             </Link>
@@ -395,9 +402,9 @@ export default function ProductDetailView({
             {relatedProducts.map((rel) => (
               <div
                 key={rel.id}
-                className="bg-white rounded-3xl border border-brand-clay/70 p-4 shadow-soft hover:shadow-card transition-all"
+                className="clay-card rounded-[28px] p-4 transition-all hover:scale-[1.01]"
               >
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-brand-sand mb-3">
+                <div className="relative aspect-square rounded-[20px] overflow-hidden bg-brand-sand mb-3">
                   <Image
                     src={rel.images?.[0]?.url || selectedImage}
                     alt={rel.title}

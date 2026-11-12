@@ -138,23 +138,23 @@ export default function SellerStorefrontPage() {
           <Link
             href={`/store/${store.slug}`}
             target="_blank"
-            className="btn-secondary text-xs px-5 py-2.5 flex items-center gap-1.5"
+            className="clay-pill text-xs px-5 py-2.5 font-bold text-brand-charcoal hover:shadow-clay-card flex items-center gap-1.5 transition-all"
           >
             <span>Live Public Store</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            <ExternalLink className="w-3.5 h-3.5 text-brand-terracotta" />
           </Link>
         )}
       </div>
 
       {success && (
-        <div className="p-4 rounded-2xl bg-brand-sage-light text-brand-sage-dark border border-brand-sage/30 text-xs font-medium flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-brand-sage shrink-0" />
+        <div className="p-4 rounded-2xl bg-brand-mint text-emerald-900 border border-emerald-200 text-xs font-bold flex items-center gap-2 shadow-xs">
+          <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
           <span>Your storefront changes have been saved and published live!</span>
         </div>
       )}
 
       {error && (
-        <div className="p-4 rounded-2xl bg-red-50 text-red-700 border border-red-200 text-xs">
+        <div className="p-4 rounded-2xl bg-red-50 text-red-700 border border-red-200 text-xs font-medium">
           {error}
         </div>
       )}
@@ -162,25 +162,27 @@ export default function SellerStorefrontPage() {
       {/* Form */}
       <form onSubmit={handleSave} className="space-y-8">
         {/* Banner & Logo Visual Identity */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-6">
-          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-6 bg-white">
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/30">
             Visual Brand Assets
           </h2>
 
           {/* Banner Preview */}
-          <div className="relative h-44 w-full rounded-2xl overflow-hidden bg-brand-sand border border-brand-clay">
-            {bannerUrl ? (
-              <Image src={bannerUrl} alt="Store banner preview" fill className="object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-xs text-brand-stone">
-                Banner Image Preview
-              </div>
-            )}
+          <div className="relative h-44 w-full rounded-2xl overflow-hidden bg-brand-sand clay-card p-1">
+            <div className="relative w-full h-full rounded-[14px] overflow-hidden">
+              {bannerUrl ? (
+                <Image src={bannerUrl} alt="Store banner preview" fill className="object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-xs text-brand-stone font-medium">
+                  Banner Image Preview
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Store Banner URL (HTTPS)
               </label>
               <input
@@ -188,12 +190,12 @@ export default function SellerStorefrontPage() {
                 value={bannerUrl}
                 onChange={(e) => setBannerUrl(e.target.value)}
                 placeholder="https://images.unsplash.com/photo-..."
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+                className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Logo / Avatar URL (HTTPS)
               </label>
               <input
@@ -201,21 +203,21 @@ export default function SellerStorefrontPage() {
                 value={logoUrl}
                 onChange={(e) => setLogoUrl(e.target.value)}
                 placeholder="https://images.unsplash.com/photo-..."
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+                className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
               />
             </div>
           </div>
         </div>
 
         {/* Brand Profile Details */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
-          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/30">
             Brand Profile &amp; Location
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Storefront Name *
               </label>
               <input
@@ -223,12 +225,12 @@ export default function SellerStorefrontPage() {
                 required
                 value={storeName}
                 onChange={(e) => setStoreName(e.target.value)}
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none font-bold"
+                className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 font-bold"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+              <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
                 Studio Location (City, Country)
               </label>
               <input
@@ -236,13 +238,13 @@ export default function SellerStorefrontPage() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Jaipur, India or Portland, OR"
-                className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+                className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Brand Tagline (one catchy sentence)
             </label>
             <input
@@ -250,24 +252,24 @@ export default function SellerStorefrontPage() {
               value={tagline}
               onChange={(e) => setTagline(e.target.value)}
               placeholder="e.g. Earthy stoneware shaped by hand, touched by warmth"
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Short Bio / Description
             </label>
             <textarea
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none resize-none"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Instagram Handle
             </label>
             <input
@@ -275,19 +277,19 @@ export default function SellerStorefrontPage() {
               value={instagram}
               onChange={(e) => setInstagram(e.target.value)}
               placeholder="@yourbrand"
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
         </div>
 
         {/* Maker Story & Craft Ethics */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
-          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/30">
             Maker Story &amp; Craftsmanship
           </h2>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               The Maker&apos;s Story (History, motivation, origins)
             </label>
             <textarea
@@ -295,12 +297,12 @@ export default function SellerStorefrontPage() {
               value={story}
               onChange={(e) => setStory(e.target.value)}
               placeholder="Tell patrons why you began this craft, your inspiration, and your journey..."
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none resize-none leading-relaxed"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 resize-none leading-relaxed"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Craftsmanship Details &amp; Material Ethics
             </label>
             <textarea
@@ -308,19 +310,19 @@ export default function SellerStorefrontPage() {
               value={craftsmanship}
               onChange={(e) => setCraftsmanship(e.target.value)}
               placeholder="Describe your raw materials, firing temps, sustainable sourcing, or zero-waste methods..."
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none resize-none"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30 resize-none"
             />
           </div>
         </div>
 
         {/* Shipping & Policies */}
-        <div className="bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-8 shadow-soft space-y-5">
-          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/40">
+        <div className="clay-card rounded-[32px] p-6 sm:p-8 space-y-5 bg-white">
+          <h2 className="font-serif text-lg font-bold text-brand-charcoal pb-2 border-b border-brand-clay/30">
             Store Policies
           </h2>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Shipping &amp; Packaging Policy
             </label>
             <input
@@ -328,12 +330,12 @@ export default function SellerStorefrontPage() {
               value={policyShipping}
               onChange={(e) => setPolicyShipping(e.target.value)}
               placeholder="e.g. Dispatches within 2 business days in plastic-free packaging."
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-brand-charcoal mb-1">
+            <label className="block text-xs font-bold text-brand-charcoal mb-1.5">
               Returns &amp; Exchanges Policy
             </label>
             <input
@@ -341,7 +343,7 @@ export default function SellerStorefrontPage() {
               value={policyReturns}
               onChange={(e) => setPolicyReturns(e.target.value)}
               placeholder="e.g. 14-day returns accepted for unused items in original packaging."
-              className="w-full px-4 py-2.5 text-xs rounded-xl bg-brand-cream/50 border border-brand-clay focus:outline-none"
+              className="w-full px-4 py-2.5 text-xs rounded-xl clay-input focus:outline-none focus:ring-2 focus:ring-brand-terracotta/30"
             />
           </div>
         </div>
@@ -351,7 +353,7 @@ export default function SellerStorefrontPage() {
           <button
             type="submit"
             disabled={saving}
-            className="btn-primary text-xs px-8 py-3.5 shadow-clay flex items-center gap-2 font-bold"
+            className="clay-pill-btn text-xs px-8 py-3.5 text-white flex items-center gap-2 font-bold tracking-wide"
           >
             {saving ? (
               <span>Saving Changes...</span>

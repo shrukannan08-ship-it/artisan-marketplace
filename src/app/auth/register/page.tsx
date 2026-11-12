@@ -31,14 +31,14 @@ export default function RegisterPage() {
           {/* Customer Registration Card */}
           <Link
             href="/auth/customer/register"
-            className="group relative bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-7 shadow-card hover:border-brand-sage hover:shadow-card-hover transition-all flex flex-col justify-between"
+            className="group relative clay-card rounded-[32px] p-6 sm:p-7 bg-white hover:shadow-clay-card transition-all flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand-sage-light flex items-center justify-center text-brand-sage-dark group-hover:scale-105 transition-transform">
-                <Heart className="w-6 h-6 text-brand-sage" />
+              <div className="w-14 h-14 rounded-2xl bg-brand-mint text-emerald-900 flex items-center justify-center shadow-clay-card border-t border-l border-white/80 group-hover:scale-105 transition-transform">
+                <Heart className="w-6 h-6 fill-emerald-800" />
               </div>
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brand-sage">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800">
                   I Want to Discover &amp; Shop
                 </span>
                 <h2 className="font-serif text-xl font-bold text-brand-charcoal mt-1">
@@ -46,22 +46,22 @@ export default function RegisterPage() {
                 </h2>
                 <ul className="text-xs text-brand-stone mt-3 space-y-1.5">
                   <li className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-brand-sage shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                     <span>Curated handmade collections</span>
                   </li>
                   <li className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-brand-sage shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                     <span>Wishlist &amp; fast checkout</span>
                   </li>
                   <li className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-brand-sage shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                     <span>Real-time order tracking</span>
                   </li>
                 </ul>
               </div>
             </div>
 
-            <div className="pt-6 flex items-center justify-between font-bold text-xs text-brand-sage-dark group-hover:text-brand-sage transition-colors">
+            <div className="pt-6 flex items-center justify-between font-bold text-xs text-emerald-900 group-hover:text-emerald-700 transition-colors">
               <span>Create Customer Account</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
@@ -70,10 +70,10 @@ export default function RegisterPage() {
           {/* Owner Registration Card */}
           <Link
             href="/auth/owner/register"
-            className="group relative bg-white rounded-3xl border border-brand-clay/70 p-6 sm:p-7 shadow-card hover:border-brand-terracotta hover:shadow-card-hover transition-all flex flex-col justify-between"
+            className="group relative clay-card rounded-[32px] p-6 sm:p-7 bg-white hover:shadow-clay-card transition-all flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand-terracotta/10 flex items-center justify-center text-brand-terracotta group-hover:scale-105 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-brand-peach/60 text-brand-terracotta flex items-center justify-center shadow-clay-card border-t border-l border-white/80 group-hover:scale-105 transition-transform">
                 <Store className="w-6 h-6 text-brand-terracotta" />
               </div>
               <div>
