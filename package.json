@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "node scripts/test-workflows.mjs",
+    "test:supabase": "node scripts/test-supabase-migration.mjs",
     "db:push": "prisma db push",
     "db:seed": "node scripts/seed.mjs",
     "db:studio": "prisma studio"

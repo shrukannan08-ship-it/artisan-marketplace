@@ -18,6 +18,7 @@ export interface Category {
   imageUrl?: string | null;
   iconName?: string | null;
   featured?: boolean;
+  _count?: { products: number };
 }
 
 export interface Store {
@@ -41,6 +42,7 @@ export interface Store {
   instagram?: string | null;
   featured?: boolean;
   createdAt?: string | Date;
+  _count?: { products: number };
 }
 
 export interface ProductVariant {
@@ -85,6 +87,8 @@ export interface Product {
   category?: Category;
   images: ProductImage[];
   variants?: ProductVariant[];
+  reviews?: Review[];
+  _count?: { orderItems?: number; reviews?: number };
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
@@ -160,4 +164,5 @@ export interface Enquiry {
   message: string;
   status: "NEW" | "REPLIED" | "CLOSED";
   createdAt: string | Date;
+  product?: { id?: string; title: string; slug: string } | null;
 }

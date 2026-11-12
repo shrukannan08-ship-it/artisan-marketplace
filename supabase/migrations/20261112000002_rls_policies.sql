@@ -46,6 +46,34 @@ AS $$
   );
 $$;
 
+CREATE OR REPLACE FUNCTION public.is_order_owner(p_order_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.orders o
+    WHERE o.id = p_order_id AND o.user_id = auth.uid()
+  );
+$$;
+
+CREATE OR REPLACE FUNCTION public.order_has_vendor_store(p_order_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.order_items oi
+    JOIN public.stores s ON s.id = oi.store_id
+    WHERE oi.order_id = p_order_id AND s.user_id = auth.uid()
+  );
+$$;
+
 -- ==============================================================================
 -- 2. Enable RLS Across All Tables
 -- ==============================================================================
@@ -290,10 +318,7 @@ CREATE POLICY "orders_select_customer_vendor_or_admin"
   USING (
     user_id = auth.uid()
     OR public.is_admin()
-    OR EXISTS (
-      SELECT 1 FROM public.order_items oi
-      WHERE oi.order_id = orders.id AND public.is_store_owner(oi.store_id)
-    )
+    OR public.order_has_vendor_store(id)
   );
 
 DROP POLICY IF EXISTS "orders_update_admin" ON public.orders;
@@ -308,10 +333,7 @@ CREATE POLICY "order_items_select_customer_vendor_or_admin"
   USING (
     public.is_store_owner(store_id)
     OR public.is_admin()
-    OR EXISTS (
-      SELECT 1 FROM public.orders o
-      WHERE o.id = order_items.order_id AND o.user_id = auth.uid()
-    )
+    OR public.is_order_owner(order_id)
   );
 
 DROP POLICY IF EXISTS "order_items_update_vendor_or_admin" ON public.order_items;

@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hashPassword, signToken, AUTH_COOKIE_NAME } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
+import type { UserRole } from "@/types";
 
 export async function POST(req: Request) {
   try {
@@ -31,6 +34,54 @@ export async function POST(req: Request) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+
+    if (isSupabaseConfigured()) {
+      const supabase = await createClient();
+      const normalizedRole = role === "OWNER" || role === "SELLER" ? "OWNER" : "CUSTOMER";
+      const { data, error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: {
+          data: {
+            name: String(name).trim(),
+            role: normalizedRole,
+            store_name: storeName ? String(storeName).trim() : undefined,
+            tagline: tagline ? String(tagline).trim() : undefined,
+            description: description ? String(description).trim() : undefined,
+            location: location ? String(location).trim() : undefined,
+          },
+        },
+      });
+
+      if (error || !data.user) {
+        return NextResponse.json(
+          { error: error?.message || "Failed to register account" },
+          { status: 400 }
+        );
+      }
+
+      const [{ data: profile }, { data: store }] = await Promise.all([
+        supabase.from("profiles").select("id, name, email, role").eq("id", data.user.id).maybeSingle(),
+        supabase.from("stores").select("id, slug, store_name").eq("user_id", data.user.id).maybeSingle(),
+      ]);
+
+      return NextResponse.json(
+        {
+          success: true,
+          requiresEmailConfirmation: !data.session,
+          user: {
+            id: data.user.id,
+            name: profile?.name ?? String(name).trim(),
+            email: profile?.email ?? normalizedEmail,
+            role: (profile?.role ?? normalizedRole) as UserRole,
+            storeId: store?.id ?? null,
+            storeSlug: store?.slug ?? null,
+            storeName: store?.store_name ?? null,
+          },
+        },
+        { status: 201 }
+      );
+    }
     const existing = await prisma.user.findUnique({
       where: { email: normalizedEmail },
     });

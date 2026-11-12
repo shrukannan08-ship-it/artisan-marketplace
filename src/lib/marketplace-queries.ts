@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { isSupabaseAdminConfigured, isSupabaseConfigured } from "@/lib/supabase/config";
 import { createAdminClient, createClient, createPublicClient } from "@/lib/supabase/server";
+import type { Order } from "@/types";
 import {
   type DbRow,
   mapCategory,
@@ -357,7 +358,10 @@ export async function getUserOrders(userId: string) {
   });
 }
 
-export async function getOrderConfirmation(orderId: string, receiptToken?: string | null) {
+export async function getOrderConfirmation(
+  orderId: string,
+  receiptToken?: string | null
+): Promise<Order | null> {
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
     const { data: rpcOrder } = await supabase.rpc("get_order_receipt", {
@@ -365,8 +369,8 @@ export async function getOrderConfirmation(orderId: string, receiptToken?: strin
       p_receipt_token: receiptToken || null,
     });
 
-    if (rpcOrder) {
-      return rpcOrder;
+    if (rpcOrder && typeof rpcOrder === "object") {
+      return rpcOrder as Order;
     }
 
     if (isSupabaseAdminConfigured() && receiptToken) {

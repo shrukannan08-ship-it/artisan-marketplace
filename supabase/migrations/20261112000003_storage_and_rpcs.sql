@@ -470,3 +470,7 @@ BEGIN
   );
 END;
 $$;
+
+GRANT EXECUTE ON FUNCTION public.create_order(jsonb, jsonb, text, uuid) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_order_receipt(uuid, uuid) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_seller_stats(uuid) TO authenticated;

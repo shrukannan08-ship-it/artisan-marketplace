@@ -42,6 +42,18 @@ export async function GET() {
 
       const orderItems = ((rows ?? []) as DbRow[]).map((row) => {
         const ord = row.orders as DbRow | null | undefined;
+        const prof = ord?.profiles as { name?: string; email?: string } | null | undefined;
+        let fallbackUser: { name: string; email: string } | null = null;
+        if (!prof && typeof ord?.shipping_address === "string") {
+          try {
+            const addr = JSON.parse(ord.shipping_address) as { fullName?: string; email?: string };
+            if (addr?.fullName || addr?.email) {
+              fallbackUser = { name: addr.fullName || "", email: addr.email || "" };
+            }
+          } catch {
+            // Ignore malformed shipping address JSON
+          }
+        }
         return {
           ...mapOrderItem(row),
           createdAt: row.created_at,
@@ -54,7 +66,7 @@ export async function GET() {
                 createdAt: ord.created_at,
                 guestName: ord.guest_name,
                 guestEmail: ord.guest_email,
-                user: ord.profiles ?? null,
+                user: prof ?? fallbackUser,
               }
             : undefined,
         };

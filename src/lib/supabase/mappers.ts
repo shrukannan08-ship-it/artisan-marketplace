@@ -78,16 +78,18 @@ export function mapStore(row: DbRow): Store {
 export function mapProductImage(row: DbRow): ProductImage {
   return {
     id: asStr(row.id),
+    productId: asStr(row.product_id),
     url: asStr(row.url),
     altText: asOptStr(row.alt_text),
     isPrimary: asBool(row.is_primary),
-    displayOrder: asNum(row.display_order, 0),
+    order: asNum(row.display_order ?? row.order, 0),
   };
 }
 
 export function mapProductVariant(row: DbRow): ProductVariant {
   return {
     id: asStr(row.id),
+    productId: asStr(row.product_id),
     name: asStr(row.name),
     option: asStr(row.option),
     priceDelta: asNum(row.price_delta, 0),
@@ -101,7 +103,7 @@ export function mapReview(row: DbRow): Review {
     id: asStr(row.id),
     userId: asStr(row.user_id),
     productId: asStr(row.product_id),
-    userName: asOptStr(row.user_name),
+    userName: asStr(row.user_name, "Patron"),
     userAvatar: asOptStr(row.user_avatar),
     rating: asNum(row.rating, 5),
     title: asOptStr(row.title),
@@ -114,7 +116,7 @@ export function mapReview(row: DbRow): Review {
 export function mapProduct(row: DbRow): Product {
   const rawImages = asRowList(row.product_images ?? row.images);
   const images = [...rawImages]
-    .sort((a, b) => asNum(a.display_order, 0) - asNum(b.display_order, 0))
+    .sort((a, b) => asNum(a.display_order ?? a.order, 0) - asNum(b.display_order ?? b.order, 0))
     .map(mapProductImage);
 
   const variants = asRowList(row.product_variants ?? row.variants).map(mapProductVariant);
@@ -144,7 +146,7 @@ export function mapProduct(row: DbRow): Product {
     stock: asNum(row.stock, 0),
     lowStockThreshold: asNum(row.low_stock_threshold, 3),
     sku: asOptStr(row.sku),
-    status: (asStr(row.status, "ACTIVE") as Product["status"]),
+    status: asStr(row.status, "ACTIVE") as Product["status"],
     featured: asBool(row.featured),
     tags: asOptStr(row.tags),
     craftDetails: asOptStr(row.craft_details),
@@ -156,7 +158,7 @@ export function mapProduct(row: DbRow): Product {
     images,
     variants,
     reviews,
-    _count: row._count as { orderItems: number; reviews: number } | undefined,
+    _count: row._count as { orderItems?: number; reviews?: number } | undefined,
   };
 }
 

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyPassword, signToken, AUTH_COOKIE_NAME } from "@/lib/auth";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
+import type { UserRole } from "@/types";
 
 export async function POST(req: Request) {
   try {
@@ -14,6 +17,39 @@ export async function POST(req: Request) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+
+    if (isSupabaseConfigured()) {
+      const supabase = await createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+      });
+
+      if (error || !data.user) {
+        return NextResponse.json(
+          { error: error?.message || "Invalid email or password" },
+          { status: 401 }
+        );
+      }
+
+      const [{ data: profile }, { data: store }] = await Promise.all([
+        supabase.from("profiles").select("id, name, email, role").eq("id", data.user.id).maybeSingle(),
+        supabase.from("stores").select("id, slug, store_name").eq("user_id", data.user.id).maybeSingle(),
+      ]);
+
+      return NextResponse.json({
+        success: true,
+        user: {
+          id: data.user.id,
+          name: profile?.name ?? data.user.user_metadata?.name ?? normalizedEmail.split("@")[0],
+          email: profile?.email ?? data.user.email ?? normalizedEmail,
+          role: (profile?.role ?? "CUSTOMER") as UserRole,
+          storeId: store?.id ?? null,
+          storeSlug: store?.slug ?? null,
+          storeName: store?.store_name ?? null,
+        },
+      });
+    }
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
       include: {

@@ -234,6 +234,21 @@ export async function DELETE(
         .eq("store_id", user.storeId);
 
       if (error) {
+        // Archive instead of failing with 500 when historical order_items reference this product
+        if (error.code === "23503") {
+          const { error: archiveErr } = await supabase
+            .from("products")
+            .update({ status: "ARCHIVED" })
+            .eq("id", id)
+            .eq("store_id", user.storeId);
+          if (!archiveErr) {
+            return NextResponse.json({
+              success: true,
+              archived: true,
+              message: "Product archived to preserve existing order history",
+            });
+          }
+        }
         return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
       }
 
@@ -243,6 +258,19 @@ export async function DELETE(
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing || existing.storeId !== user.storeId) {
       return NextResponse.json({ error: "Product not found or unauthorized" }, { status: 404 });
+    }
+
+    const referencedOrderItems = await prisma.orderItem.count({ where: { productId: id } });
+    if (referencedOrderItems > 0) {
+      await prisma.product.update({
+        where: { id },
+        data: { status: "ARCHIVED" },
+      });
+      return NextResponse.json({
+        success: true,
+        archived: true,
+        message: "Product archived to preserve existing order history",
+      });
     }
 
     await prisma.product.delete({ where: { id } });

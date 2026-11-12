@@ -26,6 +26,7 @@ export async function GET() {
             *,
             orders (
               order_number,
+              shipping_address,
               created_at,
               guest_name,
               guest_email,
@@ -63,6 +64,14 @@ export async function GET() {
       const recentOrders = items.slice(0, 5).map((item: Record<string, unknown>) => {
         const ord = item.orders as Record<string, unknown> | null | undefined;
         const prof = ord?.profiles as Record<string, unknown> | null | undefined;
+        let parsedCustomerName: unknown = null;
+        if (typeof ord?.shipping_address === "string") {
+          try {
+            parsedCustomerName = JSON.parse(ord.shipping_address)?.fullName;
+          } catch {
+            // Ignore malformed shipping address JSON
+          }
+        }
         return {
           id: item.id,
           orderId: item.order_id,
@@ -74,7 +83,7 @@ export async function GET() {
           totalPrice: item.total_price,
           fulfillmentStatus: item.fulfillment_status,
           createdAt: item.created_at,
-          customerName: prof?.name || ord?.guest_name || "Customer",
+          customerName: prof?.name || ord?.guest_name || parsedCustomerName || "Customer",
         };
       });
 

@@ -23,6 +23,7 @@ export async function GET() {
           product_variants (*)
         `)
         .eq("store_id", user.storeId)
+        .neq("status", "ARCHIVED")
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -33,7 +34,7 @@ export async function GET() {
     }
 
     const products = await prisma.product.findMany({
-      where: { storeId: user.storeId },
+      where: { storeId: user.storeId, status: { not: "ARCHIVED" } },
       include: {
         category: true,
         images: true,

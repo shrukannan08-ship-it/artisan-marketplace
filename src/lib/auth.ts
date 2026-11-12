@@ -27,13 +27,20 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
-export function signToken(payload: { userId: string; role: string }): string {
+export interface LegacyTokenPayload {
+  userId: string;
+  email?: string;
+  role: string;
+  storeId?: string | null;
+}
+
+export function signToken(payload: LegacyTokenPayload): string {
   return jwt.sign(payload, getJwtSecret(), { expiresIn: "7d" });
 }
 
-export function verifyToken(token: string): { userId: string; role: string } | null {
+export function verifyToken(token: string): LegacyTokenPayload | null {
   try {
-    return jwt.verify(token, getJwtSecret()) as { userId: string; role: string };
+    return jwt.verify(token, getJwtSecret()) as LegacyTokenPayload;
   } catch {
     return null;
   }

@@ -69,9 +69,9 @@ export async function GET(req: NextRequest) {
       if (minPrice) query = query.gte("price", Math.round(Number(minPrice) * 100));
       if (maxPrice) query = query.lte("price", Math.round(Number(maxPrice) * 100));
 
-      if (sort === "price_asc") {
+      if (sort === "price_asc" || sort === "price-low") {
         query = query.order("price", { ascending: true });
-      } else if (sort === "price_desc") {
+      } else if (sort === "price_desc" || sort === "price-high") {
         query = query.order("price", { ascending: false });
       } else if (sort === "featured") {
         query = query.order("featured", { ascending: false }).order("created_at", { ascending: false });
@@ -159,9 +159,17 @@ export async function POST(req: NextRequest) {
       craftDetails,
       careInstructions,
       estimatedDispatchDays = 2,
+      imageUrl,
       images = [],
       variants = [],
     } = body;
+
+    const normalizedImages: string[] =
+      Array.isArray(images) && images.length > 0
+        ? images
+        : typeof imageUrl === "string" && imageUrl.trim()
+        ? [imageUrl.trim()]
+        : [];
 
     if (!title || !description || !categoryId || price === undefined) {
       return NextResponse.json(
@@ -214,9 +222,9 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: insertError?.message || "Failed to create product" }, { status: 400 });
       }
 
-      if (Array.isArray(images) && images.length > 0) {
+      if (normalizedImages.length > 0) {
         await supabase.from("product_images").insert(
-          images.map((url: string, idx: number) => ({
+          normalizedImages.map((url: string, idx: number) => ({
             product_id: inserted.id,
             url,
             is_primary: idx === 0,
@@ -276,7 +284,7 @@ export async function POST(req: NextRequest) {
         careInstructions: careInstructions || null,
         estimatedDispatchDays: Number(estimatedDispatchDays || 2),
         images: {
-          create: (images as string[]).map((url, idx) => ({
+          create: normalizedImages.map((url, idx) => ({
             url,
             isPrimary: idx === 0,
             order: idx,

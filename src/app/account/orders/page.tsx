@@ -118,7 +118,7 @@ export default async function CustomerOrdersPage() {
                         )}
                         <p className="text-[10px] text-brand-terracotta flex items-center gap-1 font-medium mt-0.5">
                           <Store className="w-3 h-3" />
-                          <span>{item.store.storeName}</span>
+                          <span>{item.store?.storeName || "Independent Studio"}</span>
                         </p>
                       </div>
                     </div>

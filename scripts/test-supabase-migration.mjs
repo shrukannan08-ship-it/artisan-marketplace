@@ -61,7 +61,9 @@ for (const table of expectedTables) {
 }
 assert(schemaSql.includes("CREATE TRIGGER on_auth_user_created"), "Missing auth.users signup trigger");
 assert(schemaSql.includes("guard_profile_role_change"), "Missing profile role escalation guard");
-console.log("[PASS] Schema SQL: All 16 PostgreSQL tables, auth trigger, role guard & RLS enablement verified.");
+assert(rlsSql.includes("public.is_order_owner("), "Missing non-recursive is_order_owner RLS helper");
+assert(rlsSql.includes("public.order_has_vendor_store("), "Missing non-recursive order_has_vendor_store RLS helper");
+console.log("[PASS] Schema SQL: All 16 PostgreSQL tables, auth trigger, role guard & non-recursive RLS verified.");
 
 // 2. Verify Storage buckets, policies & transactional RPCs
 assert(storageRpcSql.includes("'product-images'"), "Missing product-images bucket");

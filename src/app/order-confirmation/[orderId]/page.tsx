@@ -108,7 +108,7 @@ export default async function OrderConfirmationPage({
                   )}
                   <p className="text-[11px] text-brand-terracotta font-medium flex items-center gap-1 mt-0.5">
                     <Store className="w-3 h-3" />
-                    <span>{item.store.storeName}</span>
+                    <span>{item.store?.storeName || "Independent Studio"}</span>
                   </p>
                   <span className="inline-block mt-1 text-[10px] font-semibold text-emerald-800 bg-brand-mint/60 px-2.5 py-0.5 rounded-full">
                     Status: {item.fulfillmentStatus}
